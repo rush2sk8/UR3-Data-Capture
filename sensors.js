@@ -7,16 +7,32 @@ function init() {
     initHost('ty');
     initHost('tz');
     initHost('all');
+    initText();
 }
 
 var seriesOptions = [
-    { strokeStyle: 'rgb(255, 0,  0)', fillStyle: 'rgba(255, 0, 0,  0.3)',  lineWidth: 3 },
-    { strokeStyle: 'rgb(0, 255,  0)', fillStyle: 'rgba(0, 255, 0,  0.3)',  lineWidth: 3 },
-    { strokeStyle: 'rgb(0, 0,  255)', fillStyle: 'rgba(0, 0, 255,  0.3)',  lineWidth: 3 },
+    { strokeStyle: 'rgb(255, 0,  0)', fillStyle: 'rgba(255, 0, 0,  0.3)', lineWidth: 3 },
+    { strokeStyle: 'rgb(0, 255,  0)', fillStyle: 'rgba(0, 255, 0,  0.3)', lineWidth: 3 },
+    { strokeStyle: 'rgb(0, 0,  255)', fillStyle: 'rgba(0, 0, 255,  0.3)', lineWidth: 3 },
     { strokeStyle: 'rgb(255, 255,0)', fillStyle: 'rgba(255, 255, 0, 0.3)', lineWidth: 3 },
     { strokeStyle: 'rgb(255, 0,255)', fillStyle: 'rgba(255, 0, 255, 0.3)', lineWidth: 3 },
     { strokeStyle: 'rgb(0, 255,255)', fillStyle: 'rgba(0, 255, 255, 0.3)', lineWidth: 3 }
 ];
+
+function initText() {
+    var socket = io.connect('http://localhost:3000');
+
+    socket.on('robot-update', (data) => {
+        const readings = msg.data.split(',');
+        document.getElementById('x').innerHTML = readings[0]
+        document.getElementById('y').innerHTML = readings[1]
+        document.getElementById('z').innerHTML = readings[2]
+        document.getElementById('rx').innerHTML = readings[3]
+        document.getElementById('ry').innerHTML = readings[4]
+        document.getElementById('rz').innerHTML = readings[5]
+    });
+}
+
 
 function initHost(hostId) {
 
@@ -34,7 +50,7 @@ function initHost(hostId) {
 
     // Build the timeline
     var timeline = new SmoothieChart({ responsive: true });
-     
+
     if (hostId === 'fx') {
 
         timeline.addTimeSeries(sensor, seriesOptions[0]);
@@ -56,18 +72,18 @@ function initHost(hostId) {
         timeline.addTimeSeries(sensor, seriesOptions[4]);
 
     } else if (hostId === 'tz') {
-    	
+
         timeline.addTimeSeries(sensor, seriesOptions[5]);
 
-    }else if  (hostId === 'all'){
+    } else if (hostId === 'all') {
 
-	    timeline.addTimeSeries(fx, seriesOptions[0]);
-	    timeline.addTimeSeries(fy, seriesOptions[1]);
-	    timeline.addTimeSeries(fz, seriesOptions[2]);
+        timeline.addTimeSeries(fx, seriesOptions[0]);
+        timeline.addTimeSeries(fy, seriesOptions[1]);
+        timeline.addTimeSeries(fz, seriesOptions[2]);
 
-	    timeline.addTimeSeries(tx, seriesOptions[3]);
-	    timeline.addTimeSeries(ty, seriesOptions[4]);
-	    timeline.addTimeSeries(tz, seriesOptions[5]);
+        timeline.addTimeSeries(tx, seriesOptions[3]);
+        timeline.addTimeSeries(ty, seriesOptions[4]);
+        timeline.addTimeSeries(tz, seriesOptions[5]);
     }
 
     socket.on('sensor-update', (msg) => {
@@ -87,14 +103,14 @@ function initHost(hostId) {
             sensor.append(d, readings[4])
         } else if (hostId === 'tz') {
             sensor.append(d, readings[5])
-        }else if (hostId === 'all'){
-	        fx.append(d, readings[0])
-	        fy.append(d, readings[1])
-	        fz.append(d, readings[2])
+        } else if (hostId === 'all') {
+            fx.append(d, readings[0])
+            fy.append(d, readings[1])
+            fz.append(d, readings[2])
 
-	        tx.append(d, readings[3])
-	        tx.append(d, readings[4])
-	        tx.append(d, readings[5])
+            tx.append(d, readings[3])
+            tx.append(d, readings[4])
+            tx.append(d, readings[5])
         }
 
     });

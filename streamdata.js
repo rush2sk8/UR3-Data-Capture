@@ -23,14 +23,18 @@ var timeRecieved = 0;
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
 const captureSpawn = require('capture-spawn')
 const spawn = require('cross-spawn-async')
-const cp = spawn('cmd', ['/s', '/c', 'python', 'plswork.py'], {
+const cp = spawn('cmd', ['/s', '/c', 'python', 'rtd.py'], {
     stdio: [null, process.stdout, process.stderr]
 })
 
 var stream = captureSpawn(cp, function callback(err, res, buf) {
-    if (err) return console.error(err)
-    console.log(buf.toString())
-
+    if (err) {
+    	return console.error(err)
+    }
+    else{
+    	console.log(buf.toString())
+		io.sockets.emit('robot-update', { data: buf.toString()})
+	}
 });
 //*************************************************CMD LINE ARGS CODE*******************************************///
 if (process.argv[2] === '-h') {
