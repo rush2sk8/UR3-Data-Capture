@@ -1,4 +1,4 @@
-# OptotrackDataStreamer
+# UR3 Data Capture
 Stream data from the optitrack 6 axis force torque sensor.
 
 **Installation**
@@ -11,5 +11,4 @@ Visit ```localhost:3000``` to see the sensors in action live.
 
 
 **Usage**
-
-```usage: node streamdata.js [-h] [-log T/F]```
+ 
