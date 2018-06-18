@@ -5,6 +5,8 @@ sys.path.append('..')
 import rtde.rtde as rtde
 import rtde.rtde_config as rtde_config
 import rtde.serialize as serialize
+import time
+
 #parameters
 parser = argparse.ArgumentParser()
 parser.add_argument('--host', default='localhost', help='name of host to connect to (localhost)')
@@ -58,7 +60,7 @@ while keep_running:
             sys.exit()
     except KeyboardInterrupt:
         keep_running = False
-    
+    time.sleep(.1)
 con.send_pause()
 con.disconnect()
 

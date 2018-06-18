@@ -29,12 +29,13 @@ const cp = spawn('cmd', ['/s', '/c', 'python', 'rtd.py'], {
 
 var stream = captureSpawn(cp, function callback(err, res, buf) {
     if (err) {
-    	return console.error(err)
+        return console.error(err)
+    } else {
+        if (buf != null && buf.length > 1) {
+            console.log(buf.toString())
+            io.sockets.emit('robot-update', { data: buf.toString() })
+        }
     }
-    else{
-    	console.log(buf.toString())
-		io.sockets.emit('robot-update', { data: buf.toString()})
-	}
 });
 //*************************************************CMD LINE ARGS CODE*******************************************///
 if (process.argv[2] === '-h') {
@@ -71,21 +72,21 @@ function getAndParseXML() {
             parser.parseString(xmlData, (err, result) => {
 
                 //get the data
-                Cts_Fx   = (result['response']['Cts.Fx']) [0];
-                Cts_Fy   = (result['response']['Cts.Fy']) [0];
-                Cts_FzP  = (result['response']['Cts.FzP'])[0];
-                Cts_Tx   = (result['response']['Cts.Tx']) [0];
-                Cts_Ty   = (result['response']['Cts.Ty']) [0];
-                Cts_Tz   = (result['response']['Cts.Tz']) [0];
-                Cts_FzN  = (result['response']['Cts.FzN'])[0];
+                Cts_Fx = (result['response']['Cts.Fx'])[0];
+                Cts_Fy = (result['response']['Cts.Fy'])[0];
+                Cts_FzP = (result['response']['Cts.FzP'])[0];
+                Cts_Tx = (result['response']['Cts.Tx'])[0];
+                Cts_Ty = (result['response']['Cts.Ty'])[0];
+                Cts_Tz = (result['response']['Cts.Tz'])[0];
+                Cts_FzN = (result['response']['Cts.FzN'])[0];
 
-                NC_Fx    = (result['response']['NC.Fx']) [0];
-                NC_Fy    = (result['response']['NC.Fy']) [0];
-                NC_FzP   = (result['response']['NC.FzP'])[0];
-                NC_Tx    = (result['response']['NC.Tx']) [0];
-                NC_Ty    = (result['response']['NC.Ty']) [0];
-                NC_Tz    = (result['response']['NC.Tz']) [0];
-                NC_FzN   = (result['response']['NC.FzN'])[0];
+                NC_Fx = (result['response']['NC.Fx'])[0];
+                NC_Fy = (result['response']['NC.Fy'])[0];
+                NC_FzP = (result['response']['NC.FzP'])[0];
+                NC_Tx = (result['response']['NC.Tx'])[0];
+                NC_Ty = (result['response']['NC.Ty'])[0];
+                NC_Tz = (result['response']['NC.Tz'])[0];
+                NC_FzN = (result['response']['NC.FzN'])[0];
 
                 //get the raw numbers
                 Fx_raw = Number((result['response']['Fx'])[0]);
@@ -96,12 +97,12 @@ function getAndParseXML() {
                 Tz_raw = Number((result['response']['Tz'])[0]);
 
                 //compute the fx 
-                Fx_newton = Fx_raw*NC_Fx/Cts_Fx;
-                Fy_newton = Fy_raw*NC_Fy/Cts_Fy;
-                Fz_newton = Fz_raw*NC_FzP/Cts_FzP;
-                Tx_newton = Tx_raw*NC_Tx/Cts_Tx/1000;
-                Ty_newton = Ty_raw*NC_Ty/Cts_Ty/1000;
-                Tz_newton = Tz_raw*NC_Tz/Cts_Tz/1000;
+                Fx_newton = Fx_raw * NC_Fx / Cts_Fx;
+                Fy_newton = Fy_raw * NC_Fy / Cts_Fy;
+                Fz_newton = Fz_raw * NC_FzP / Cts_FzP;
+                Tx_newton = Tx_raw * NC_Tx / Cts_Tx / 1000;
+                Ty_newton = Ty_raw * NC_Ty / Cts_Ty / 1000;
+                Tz_newton = Tz_raw * NC_Tz / Cts_Tz / 1000;
 
                 //log the data
                 console.log("***********")
@@ -169,13 +170,13 @@ router.get('/', function(req, res) { res.json({ message: 'hooray! welcome to our
 router.get('/data', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData }) });
 
 //localhost:3000/api/force
-router.get('/force', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(0,3) }) } ) 
+router.get('/force', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(0, 3) }) })
 
 //localhost:3000/api/torque
-router.get('/torque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(3,6) }) } )
+router.get('/torque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(3, 6) }) })
 
 //localhost:3000/api/routes
-router.get('/routes', (req, res) => { res.json([{ data: "/api/data"}, {force: "/api/force"} , {torque:  "api/torque" }] ) })
+router.get('/routes', (req, res) => { res.json([{ data: "/api/data" }, { force: "/api/force" }, { torque: "api/torque" }]) })
 
 //non routed will just send you to the website localhost:3000/ 
 app.get('/', (req, res) => { res.sendFile(__dirname + '/index.html') })
