@@ -1,0 +1,18 @@
+{
+  "name": "ur3_data_capture",
+  "version": "1.1.0",
+  "description": "get the data from a UR3 robot with optotrack force torque sensor",
+  "main": "streamdata.js",
+  "dependencies": {
+    "xml2js": "^0.4.19",
+    "smoothie": "^1.35.0",
+    "express": "4.16.3",
+    "socket.io": "^2.0.3",
+    "body-parser": "~1.0.1",
+    "capture-spawn" : "1.0.1",
+    "cross-spawn-async" : "2.2.5"
+  },
+  "author": "Rushad Antia",
+  "license": "MIT",
+  "repository": "https://github.com/rushadantia/OptotrackDataStreamer"
+}

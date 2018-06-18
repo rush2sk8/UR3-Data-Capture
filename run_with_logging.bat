@@ -1,0 +1,1 @@
+node streamdata.js -log t

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Live Sensor Data</title>
+    <script type="text/javascript" src="http://smoothiecharts.org/smoothie.js"></script>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./sensors.js"></script>
+</head>
+
+<body onload="init()">
+
+    <body>
+        <h1>Force Torque Readings</h1>
+        <h2>ALL READINGS</h2>
+        <canvas id="all" style="width:100%; height:150px"></canvas>
+        <h3>FX</h3>
+        <canvas id="fx" style="width:100%; height:150px"></canvas>
+        <h3>FY</h3>
+        <canvas id="fy" style="width:100%; height:150px"></canvas>
+        <h3>FZ</h3>
+        <canvas id="fz" style="width:100%; height:150px"></canvas>
+        <h3>TX</h3>
+        <canvas id="tx" style="width:100%; height:150px"></canvas>
+        <h3>TY</h3>
+        <canvas id="ty" style="width:100%; height:150px"></canvas>
+        <h3>TZ</h3>
+        <canvas id="tz" style="width:100%; height:150px"></canvas>
+        <div class="smoothie-chart-tooltip" style="position: absolute; display: none;"></div>
+    </body>
+
+</html>
