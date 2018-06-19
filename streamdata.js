@@ -32,7 +32,6 @@ var stream = captureSpawn(cp, function callback(err, res, buf) {
         return console.error(err)
     } else {
         if (buf != null && buf.length > 1) {
-            console.log(buf.toString())
             io.sockets.emit('robot-update', { data: buf.toString() })
         }
     }
