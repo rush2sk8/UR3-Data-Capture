@@ -30,9 +30,11 @@ function initText() {
             document.getElementById('z').innerHTML = "Z: " + readings[2]
             document.getElementById('rx').innerHTML = "RX: " + readings[3]
             document.getElementById('ry').innerHTML = "RY: " + readings[4]
-            document.getElementById('rz').innerHTML = "RZ: " +readings[5]
+            document.getElementById('rz').innerHTML = "RZ: " + readings[5]
+
         }
     });
+
 }
 
 
