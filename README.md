@@ -1,5 +1,5 @@
 # UR3 Data Capture
-Stream data from the optitrack 6 axis force torque sensor.
+Stream data from the robot and optitrack 6 axis force torque sensor.
 
 **Installation**
 
@@ -7,8 +7,6 @@ Stream data from the optitrack 6 axis force torque sensor.
 
 Also dont forget to change the ```host ``` ip to the ip address of the sensor.
 
-Visit ```localhost:3000``` to see the sensors in action live.
+Visit ```localhost:3000``` to see the data in action live.
 
 
-**Usage**
- 
