@@ -9,7 +9,8 @@ var xml2js = require('xml2js');
 var fs = require('fs');
 var parser = new xml2js.Parser();
 
-var stream = null;
+var forcetorquestream = null;
+var robotstream = null;
 
 const express = require('express');
 const app = express();
@@ -23,20 +24,24 @@ var timeRecieved = 0;
 
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
 var options = {
-  mode: 'text',
-  pythonOptions: ['-u'], // get print results in real-time
+    mode: 'text',
+    pythonOptions: ['-u'], // get print results in real-time
 };
 
 // Use python shell
 var pyshell = new PythonShell('rtd.py', options);
 
-pyshell.on('message', function (buf) {
- 
-   if (buf != null && buf.length > 1) {
-            currRobotData = buf.toString();
-            io.sockets.emit('robot-update', { data: currRobotData })
-            console.log("data: "+ currRobotData)
-        }
+pyshell.on('message', function(buf) {
+
+    if (buf != null && buf.length > 1) {
+
+        currRobotData = buf.toString();
+
+        io.sockets.emit('robot-update', { data: currRobotData })
+
+        if (enable_logging) robotstream.write(currRobotData + "\n")
+        console.log("data: " + currRobotData)
+    }
 });
 
 //*************************************************CMD LINE ARGS CODE*******************************************///
@@ -50,10 +55,15 @@ if (process.argv[2] === '-h') {
         enable_logging = true;
 
         //create the write stream file
-        stream = fs.createWriteStream(Date.now() + '_data.csv');
+        forcetorquestream = fs.createWriteStream(Date.now() + '_forcetorque_data.csv');
+
+        robotstream = fs.createWriteStream(Date.now() + '_robot_data.csv');
 
         //if logging is enabled write this header
-        stream.write("Fx (N),Fy (N),Fz (N),Tx (Nm),Ty (Nm),Tz (Nm)\n");
+        forcetorquestream.write("Fx (N),Fy (N),Fz (N),Tx (Nm),Ty (Nm),Tz (Nm)\n");
+
+        //if logging is enabled write this header
+        robotstream.write("X, Y, Z, RX, RY, RZ\n");
     }
 }
 
@@ -128,7 +138,7 @@ function getAndParseXML() {
                 io.sockets.emit('sensor-update', { data: s })
 
                 //if the logging is enabled then write it to the file
-                if (enable_logging) stream.write(s + "\n")
+                if (enable_logging) forcetorquestream.write(s + "\n")
             });
 
         });
@@ -136,7 +146,7 @@ function getAndParseXML() {
 }
 
 //run it every X ms
-setInterval(getAndParseXML, INTERVAL_TIME);
+//setInterval(getAndParseXML, INTERVAL_TIME);///////////////////////////////////////////////////////REENABLE WHEN SITE IS UP
 
 //***************************************************WINDOWS CODE**************************************************///
 if (process.platform === "win32") {
@@ -150,8 +160,9 @@ if (process.platform === "win32") {
 
 //if sigint is captured then end the stream and exit the program
 process.on("SIGINT", function() {
-    if (enable_logging)
-        stream.end();
+    if (enable_logging) {
+        forcetorquestream.end();
+    }
     process.exit();
 });
 

@@ -29,7 +29,7 @@ import logging
 
 import serialize
 
-DEFAULT_TIMEOUT = 10
+DEFAULT_TIMEOUT = 20
 
 class Command:
     RTDE_REQUEST_PROTOCOL_VERSION = 86        # ascii V
