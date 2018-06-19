@@ -16,24 +16,19 @@ const app = express();
 const expressServer = app.listen(3000);
 const io = require('socket.io')(expressServer);
 const bodyParser = require('body-parser');
+const PythonShell = require('python-shell');
 var currData = 'NONE';
 var currRobotData = 'NONE'
 var timeRecieved = 0;
 
-
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
-var myPythonScriptPath = 'rtd.py';
-
 var options = {
   mode: 'text',
   pythonOptions: ['-u'], // get print results in real-time
 };
 
 // Use python shell
-var PythonShell = require('python-shell');
-var pyshell = new PythonShell(myPythonScriptPath, options);
-
-var time = Date.now();
+var pyshell = new PythonShell('rtd.py', options);
 
 pyshell.on('message', function (buf) {
  
