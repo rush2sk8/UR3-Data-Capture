@@ -17,25 +17,33 @@ const expressServer = app.listen(3000);
 const io = require('socket.io')(expressServer);
 const bodyParser = require('body-parser');
 var currData = 'NONE';
+var currRobotData = 'NONE'
 var timeRecieved = 0;
 
 
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
-const captureSpawn = require('capture-spawn')
-const spawn = require('cross-spawn-async')
-const cp = spawn('cmd', ['/s', '/c', 'python', 'rtd.py'], {
-    stdio: [null, process.stdout, process.stderr]
-})
+var myPythonScriptPath = 'rtd.py';
 
-var stream = captureSpawn(cp, function callback(err, res, buf) {
-    if (err) {
-        return console.error(err)
-    } else {
-        if (buf != null && buf.length > 1) {
-            io.sockets.emit('robot-update', { data: buf.toString() })
+var options = {
+  mode: 'text',
+  pythonOptions: ['-u'], // get print results in real-time
+};
+
+// Use python shell
+var PythonShell = require('python-shell');
+var pyshell = new PythonShell(myPythonScriptPath, options);
+
+var time = Date.now();
+
+pyshell.on('message', function (buf) {
+ 
+   if (buf != null && buf.length > 1) {
+            currRobotData = buf.toString();
+            io.sockets.emit('robot-update', { data: currRobotData })
+            console.log("data: "+ currRobotData)
         }
-    }
 });
+
 //*************************************************CMD LINE ARGS CODE*******************************************///
 if (process.argv[2] === '-h') {
     console.log("usage: node streamdata.js [-h] [-log t/f]");
@@ -152,7 +160,7 @@ process.on("SIGINT", function() {
     process.exit();
 });
 
-//***************************************************WEBSITE CODE**************************************************///
+//***************************************************API CODE**************************************************///
 
 //create an api route
 var router = express.Router();
@@ -176,6 +184,12 @@ router.get('/torque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - ti
 
 //localhost:3000/api/routes
 router.get('/routes', (req, res) => { res.json([{ data: "/api/data" }, { force: "/api/force" }, { torque: "api/torque" }]) })
+
+//localhost:3000/api/robotxyz
+router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(',').slice(0, 3) }) })
+
+//localhost:3000/api/robotxyz
+router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(',').slice(3, 6) }) })
 
 //non routed will just send you to the website localhost:3000/ 
 app.get('/', (req, res) => { res.sendFile(__dirname + '/index.html') })
