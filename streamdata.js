@@ -44,6 +44,13 @@ pyshell.on('message', function(buf) {
     }
 });
 
+pyshell.end((err, code, signal) => {
+    if (err) {
+        console.log('The exit code was: ' + code);
+        console.log('The exit signal was: ' + signal);
+    }
+});
+
 //*************************************************CMD LINE ARGS CODE*******************************************///
 if (process.argv[2] === '-h') {
     console.log("usage: node streamdata.js [-h] [-log t/f]");
@@ -139,6 +146,7 @@ function getAndParseXML() {
 
                 //if the logging is enabled then write it to the file
                 if (enable_logging) forcetorquestream.write(s + "\n")
+
             });
 
         });
@@ -146,7 +154,7 @@ function getAndParseXML() {
 }
 
 //run it every X ms
-//setInterval(getAndParseXML, INTERVAL_TIME);///////////////////////////////////////////////////////REENABLE WHEN SITE IS UP
+setInterval(getAndParseXML, INTERVAL_TIME); ///////////////////////////////////////////////////////REENABLE WHEN SITE IS UP
 
 //***************************************************WINDOWS CODE**************************************************///
 if (process.platform === "win32") {
@@ -198,7 +206,7 @@ router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(','
 router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(',').slice(3, 6) }) })
 
 //non routed will just send you to the website localhost:3000/ 
-app.get('/', (req, res) => { res.sendFile(__dirname + '/index.html') })
+app.get('/', (req, res) => { res.sendFile(__dirname + '/website/index.html') })
 
 //used for other files that might be needed
 app.use(express.static(__dirname + '/'));
