@@ -1,5 +1,5 @@
 //***************************************************SETUP CODE**************************************************///
-const INTERVAL_TIME = 100;
+const SENSOR_INTERVAL_TIME = 100;
 const IP_ADDRESS = '10.20.0.15';
 var enable_logging = false;
 
@@ -31,6 +31,7 @@ var options = {
 // Use python shell
 var pyshell = new PythonShell('rtd.py', options);
 
+//when we get a message from the script
 pyshell.on('message', function(buf) {
 
     if (buf != null && buf.length > 1) {
@@ -44,6 +45,7 @@ pyshell.on('message', function(buf) {
     }
 });
 
+//catch the error where the python script fails
 pyshell.end((err, code, signal) => {
     if (err) {
         console.log('The exit code was: ' + code);
@@ -151,10 +153,11 @@ function getAndParseXML() {
 
         });
     }).end();
+
 }
 
 //run it every X ms
-setInterval(getAndParseXML, INTERVAL_TIME); ///////////////////////////////////////////////////////REENABLE WHEN SITE IS UP
+setInterval(getAndParseXML, SENSOR_INTERVAL_TIME); //////////////////REENABLE WHEN SITE IS UP
 
 //***************************************************WINDOWS CODE**************************************************///
 if (process.platform === "win32") {
@@ -170,6 +173,7 @@ if (process.platform === "win32") {
 process.on("SIGINT", function() {
     if (enable_logging) {
         forcetorquestream.end();
+        robotstream.end()
     }
     process.exit();
 });

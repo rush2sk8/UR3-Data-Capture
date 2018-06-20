@@ -1,3 +1,4 @@
+# partial modification on /rtde/examples/record.py
 import argparse
 import logging
 import sys

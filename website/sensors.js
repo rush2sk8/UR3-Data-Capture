@@ -22,6 +22,17 @@ var seriesOptions = [
 function initText() {
     var socket = io.connect('http://localhost:3000');
 
+    const initData = {
+        nodes: [{ id: 0 }],
+        links: []
+    };
+    const elem = document.getElementById("3d-graph");
+    const Graph = ForceGraph3D()(elem)
+        .enableNodeDrag(false)
+        .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
+        .onNodeClick(removeNode)
+        .graphData(initData);
+
     socket.on('robot-update', (d) => {
         if (d != null) {
             const readings = d.data.split(',');
@@ -32,6 +43,12 @@ function initText() {
             document.getElementById('ry').innerHTML = "RY: " + readings[4]
             document.getElementById('rz').innerHTML = "RZ: " + readings[5]
 
+            const { nodes, links } = Graph.graphData();
+            const id = nodes.length;
+            Graph.graphData({
+                nodes: [...nodes, { id }],
+                links: [...links, { source: id, target: (id - 1) }]
+            });
         }
     });
 
@@ -40,7 +57,7 @@ function initText() {
 
 function initHost(hostId) {
 
-    // Initialize an empty TimeSeries for each CPU.
+    // Initialize an empty TimeSeries for each sensor value.
     var sensor = new TimeSeries()
     var fx = new TimeSeries();
     var fy = new TimeSeries();
@@ -53,7 +70,7 @@ function initHost(hostId) {
     var socket = io.connect('http://localhost:3000');
 
     // Build the timeline
-    var timeline = new SmoothieChart({ responsive: true });
+    var timeline = new SmoothieChart({ responsive: true, tooltip: true, sharpLines: true });
 
     if (hostId === 'fx') {
 
