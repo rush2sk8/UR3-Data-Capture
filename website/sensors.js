@@ -22,17 +22,6 @@ var seriesOptions = [
 function initText() {
     var socket = io.connect('http://localhost:3000');
 
-    const initData = {
-        nodes: [{ id: 0 }],
-        links: []
-    };
-    const elem = document.getElementById("3d-graph");
-    const Graph = ForceGraph3D()(elem)
-        .enableNodeDrag(false)
-        .onNodeHover(node => elem.style.cursor = node ? 'pointer' : null)
-        .onNodeClick(removeNode)
-        .graphData(initData);
-
     socket.on('robot-update', (d) => {
         if (d != null) {
             const readings = d.data.split(',');
@@ -42,18 +31,9 @@ function initText() {
             document.getElementById('rx').innerHTML = "RX: " + readings[3]
             document.getElementById('ry').innerHTML = "RY: " + readings[4]
             document.getElementById('rz').innerHTML = "RZ: " + readings[5]
-
-            const { nodes, links } = Graph.graphData();
-            const id = nodes.length;
-            Graph.graphData({
-                nodes: [...nodes, { id }],
-                links: [...links, { source: id, target: (id - 1) }]
-            });
         }
     });
-
 }
-
 
 function initHost(hostId) {
 
