@@ -1,45 +1,77 @@
+var socket = io.connect('http://localhost:3000');
 
- var x = [];
- var y = [];
- var z = [];
- var c = [];
+var x = [];
+var y = [];
+var z = [];
+var c = [];
+var numSamples = 0;
 
- Plotly.plot('graph', [{
-     type: 'scatter3d',
-     mode: 'lines',
-     x: x,
-     y: y,
-     z: z,
-     opacity: 0.7,
-     line: {
-         width: 10,
-         color: c,
-         colorscale: 'Viridis'
-     }
- }]);
+Plotly.plot('graph', [{
+    type: 'scatter3d',
+    mode: 'lines',
+    x: x,
+    y: y,
+    z: z,
+    opacity: 0.7,
+    line: {
+        width: 10,
+        color: c,
+        colorscale: 'Viridis'
+    }
+}]);
 
- setInterval(() => {
+socket.on('robot-update', (d) => {
+    if (d != null) {
+        const readings = d.data.split(',');
+        x.push(readings[0]);
+        y.push(readings[1]);
+        z.push(readings[2])
+        c.push(Math.floor(Math.random() * 256))
+        numSamples += 1;
 
+        Plotly.react('graph', [{
+            type: 'scatter3d',
+            mode: 'lines',
+            x: x,
+            y: y,
+            z: z,
+            opacity: 0.7,
+            line: {
+                width: 5,
+                color: c,
+                colorscale: 'Viridis'
+            }
+        }]);
 
-     x.push(Math.floor(Math.random() * 29));
-     y.push(Math.floor(Math.random() * 99));
-     z.push(Math.floor(Math.random() * 9));
-     c.push(Math.floor(Math.random() * 255));
+        if (numSamples >= 500) {
+            Plotly.purge('graph')
+            Plotly.plot('graph', [{
+                type: 'scatter3d',
+                mode: 'lines',
+                x: x,
+                y: y,
+                z: z,
+                opacity: 0.7,
+                line: {
+                    width: 10,
+                    color: c,
+                    colorscale: 'Viridis'
+                }
+            }]);
 
+            x = [];
+            y = [];
+            z = []; 
+            c = [];
 
-     Plotly.react('graph', [{
-         type: 'scatter3d',
-         mode: 'lines',
-         x: x,
-         y: y,
-         z: z,
-         opacity: 0.7,
-         line: {
-             width: 5,
-             color: c,
-             colorscale: 'Viridis'
-         }
-     }]);
+            x.length = 0;
+            y.length = 0;
+            z.length = 0;
+            c.length = 0;
 
+            numSamples = 0;
+        }
+        console.log(numSamples)
+    }
 
- }, 50);
+});

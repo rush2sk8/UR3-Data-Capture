@@ -155,7 +155,7 @@ function getAndParseXML() {
 
     req.on('error', function(err) {
     	if (err.code === "ECONNRESET") {
-        	console.log("Timeout occurs");
+        	
         }
     });
 
@@ -218,5 +218,12 @@ function getAndParseXML() {
     //non routed will just send you to the website localhost:3000/ 
     app.get('/', (req, res) => { res.sendFile(__dirname + '/website/index.html') })
 
+    app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/3d_plotting/main.html') })
+
+    
+
     //used for other files that might be needed
     app.use(express.static(__dirname + '/'));
+
+       //used for other files that might be needed
+    app.use(express.static(__dirname + '/3d_plotting/'));
