@@ -22,36 +22,6 @@ var currData = 'NONE';
 var currRobotData = 'NONE'
 var timeRecieved = 0;
 
-//***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
-var options = {
-    mode: 'text',
-    pythonOptions: ['-u'], // get print results in real-time
-};
-
-// Use python shell
-var pyshell = new PythonShell('rtd.py', options);
-
-//when we get a message from the script
-pyshell.on('message', function(buf) {
-
-    if (buf != null && buf.length > 1) {
-
-        currRobotData = buf.toString();
-
-        io.sockets.emit('robot-update', { data: currRobotData })
-
-        if (enable_logging) robotstream.write(currRobotData + "\n")
-        console.log("data: " + currRobotData)
-    }
-});
-
-//catch the error where the python script fails
-pyshell.end((err, code, signal) => {
-    if (err) {
-        console.log('The exit code was: ' + code);
-        console.log('The exit signal was: ' + signal);
-    }
-});
 
 //*************************************************CMD LINE ARGS CODE*******************************************///
 if (process.argv[2] === '-h') {
@@ -76,12 +46,42 @@ if (process.argv[2] === '-h') {
     }
 }
 
+//***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
+// Use python shell
+var pyshell = new PythonShell('rtd.py', {
+    mode: 'text',
+    pythonOptions: ['-u'], // get print results in real-time
+});
+
+//when we get a message from the script
+pyshell.on('message', function(buf) {
+
+    if (buf != null && buf.length > 1) {
+
+        currRobotData = buf.toString();
+
+        io.sockets.emit('robot-update', { data: currRobotData })
+
+        if (enable_logging) robotstream.write(currRobotData + "\n")
+        console.log("data: " + currRobotData)
+    }
+});
+
+//catch the error where the python script fails
+pyshell.end((err, code, signal) => {
+    if (err) {
+        console.log('The exit code was: ' + code);
+        console.log('The exit signal was: ' + signal);
+    }
+});
+
+
 //********************************************GET AND COMPUTE DATA CODE*******************************************///
 //run a GET to the XML status
 function getAndParseXML() {
 
     //get the data
-    http.request({ host: IP_ADDRESS, path: '/status.xml' }, function(response) {
+    var req = http.request({ host: IP_ADDRESS, path: '/status.xml' }, function(response) {
         var xmlData = '';
 
         //chunk the data
@@ -125,20 +125,12 @@ function getAndParseXML() {
                 Ty_newton = Ty_raw * NC_Ty / Cts_Ty / 1000;
                 Tz_newton = Tz_raw * NC_Tz / Cts_Tz / 1000;
 
-                //log the data
-                console.log("***********")
-                console.log("Fx " + Fx_newton.toFixed(4))
-                console.log("Fy " + Fy_newton.toFixed(4))
-                console.log("Fz " + Fz_newton.toFixed(4))
-
-                console.log("Tx " + Tx_newton.toFixed(4))
-                console.log("Ty  " + Ty_newton.toFixed(4))
-                console.log("Tz " + Tz_newton.toFixed(4))
-
                 //create a string
                 const string = "Fx:" + Fx_newton.toFixed(4) + ',' + "Fy:" + Fy_newton.toFixed(4) + ',' + "Fz:" + Fz_newton.toFixed(4) + ',' + "Tx:" + Tx_newton.toFixed(4) + ',' + "Ty:" + Ty_newton.toFixed(4) + ',' + "Tz:" + Tz_newton.toFixed(4);
 
                 const s = Fx_newton.toFixed(4) + ',' + Fy_newton.toFixed(4) + ',' + Fz_newton.toFixed(4) + ',' + Tx_newton.toFixed(4) + ',' + Ty_newton.toFixed(4) + ',' + Tz_newton.toFixed(4);
+
+                console.log(string)
 
                 currData = string;
                 timeRecieved = Date.now()
@@ -152,65 +144,79 @@ function getAndParseXML() {
             });
 
         });
-    }).end();
-
-}
-
-//run it every X ms
-setInterval(getAndParseXML, SENSOR_INTERVAL_TIME); //////////////////REENABLE WHEN SITE IS UP
-
-//***************************************************WINDOWS CODE**************************************************///
-if (process.platform === "win32") {
-    var rl = require("readline").createInterface({
-        input: process.stdin,
-        output: process.stdout
     });
 
-    rl.on("SIGINT", function() { process.emit("SIGINT") });
-}
+    req.on('socket', function(socket) {
+            socket.setTimeout(100);
+            socket.on('timeout', function() {
+                req.abort();
+    		});
+    });
 
-//if sigint is captured then end the stream and exit the program
-process.on("SIGINT", function() {
-    if (enable_logging) {
-        forcetorquestream.end();
-        robotstream.end()
+    req.on('error', function(err) {
+    	if (err.code === "ECONNRESET") {
+        	console.log("Timeout occurs");
+        }
+    });
+
+        req.end()
     }
-    process.exit();
-});
 
-//***************************************************API CODE**************************************************///
+    //run it every X ms
+    setInterval(getAndParseXML, SENSOR_INTERVAL_TIME); //////////////////REENABLE WHEN SITE IS UP
 
-//create an api route
-var router = express.Router();
+    //***************************************************WINDOWS CODE**************************************************///
+    if (process.platform === "win32") {
+        var rl = require("readline").createInterface({
+            input: process.stdin,
+            output: process.stdout
+        });
 
-//make the output in json format
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use('/api', router);
+        rl.on("SIGINT", function() { process.emit("SIGINT") });
+    }
 
-//localhost:3000/api displays this message
-router.get('/', function(req, res) { res.json({ message: 'hooray! welcome to our api!' }) });
+    //if sigint is captured then end the stream and exit the program
+    process.on("SIGINT", function() {
+        if (enable_logging) {
+            forcetorquestream.end();
+            robotstream.end()
+        }
+        process.exit();
+    });
 
-//localhost:3000/api/data returns the data 
-router.get('/data', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData }) });
+    //***************************************************API CODE**************************************************///
 
-//localhost:3000/api/force
-router.get('/force', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(0, 3) }) })
+    //create an api route
+    var router = express.Router();
 
-//localhost:3000/api/torque
-router.get('/torque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(3, 6) }) })
+    //make the output in json format
+    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json());
+    app.use('/api', router);
 
-//localhost:3000/api/routes
-router.get('/routes', (req, res) => { res.json([{ data: "/api/data" }, { force: "/api/force" }, { torque: "api/torque" }]) })
+    //localhost:3000/api displays this message
+    router.get('/', function(req, res) { res.json({ message: 'hooray! welcome to our api!' }) });
 
-//localhost:3000/api/robotxyz
-router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(',').slice(0, 3) }) })
+    //localhost:3000/api/data returns the data 
+    router.get('/data', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData }) });
 
-//localhost:3000/api/robotxyz
-router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(',').slice(3, 6) }) })
+    //localhost:3000/api/force
+    router.get('/force', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(0, 3) }) })
 
-//non routed will just send you to the website localhost:3000/ 
-app.get('/', (req, res) => { res.sendFile(__dirname + '/website/index.html') })
+    //localhost:3000/api/torque
+    router.get('/torque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(3, 6) }) })
 
-//used for other files that might be needed
-app.use(express.static(__dirname + '/'));
+    //localhost:3000/api/routes
+    router.get('/routes', (req, res) => { res.json([{ data: "/api/data" }, { force: "/api/force" }, { torque: "api/torque" }]) })
+
+    //localhost:3000/api/robotxyz
+    router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(',').slice(0, 3) }) })
+
+    //localhost:3000/api/robotxyz
+    router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(',').slice(3, 6) }) })
+
+    //non routed will just send you to the website localhost:3000/ 
+    app.get('/', (req, res) => { res.sendFile(__dirname + '/website/index.html') })
+
+    //used for other files that might be needed
+    app.use(express.static(__dirname + '/'));
