@@ -17,20 +17,12 @@ def run():
                         help='name of host to connect to (localhost)')
     parser.add_argument('--port', type=int, default=30004,
                         help='port number (30004)')
-    parser.add_argument('--samples', type=int, default=0,
-                        help='number of samples to record')
-    parser.add_argument('--frequency', type=int, default=125,
+    parser.add_argument('--frequency', type=int, default=100,
                         help='the sampling frequency in Herz')
     parser.add_argument('--config', default='record_configuration.xml',
                         help='data configuration file to use (record_configuration.xml)')
-    parser.add_argument('--output', default='robot_data.csv',
-                        help='data output file to write to (robot_data.csv)')
-    parser.add_argument(
-        "--verbose", help="increase output verbosity", action="store_true")
-    args = parser.parse_args()
 
-    if args.verbose:
-        logging.basicConfig(level=logging.INFO)
+    args = parser.parse_args()
 
     conf = rtde_config.ConfigFile(args.config)
     output_names, output_types = conf.get_recipe('out')
