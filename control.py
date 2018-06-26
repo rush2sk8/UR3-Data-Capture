@@ -1,5 +1,6 @@
 import socket 
 import time
+from math import radians
 
 HOST = "10.20.0.25"
 PORT = 30002
@@ -27,6 +28,9 @@ s.send ("movej([-0.5405182705025187, -2.350330184112267, -1.316631037266588, -2.
 s.send(HOME_STRING)
 time.sleep(2)
 data = s.recv(1024)
+
 s.close()
 print repr(data).decode('utf-8')
 print "Program finish"
+
+
