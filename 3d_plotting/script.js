@@ -32,6 +32,9 @@ socket.on('robot-update', (d) => {
         Plotly.react('graph', [{
             type: 'scatter3d',
             mode: 'lines',
+            autosize: false,
+            width: 800,
+            height: 800,
             x: x,
             y: y,
             z: z,
@@ -48,6 +51,9 @@ socket.on('robot-update', (d) => {
             Plotly.plot('graph', [{
                 type: 'scatter3d',
                 mode: 'lines',
+                autosize: false,
+                width: 800,
+                height: 800,
                 x: x,
                 y: y,
                 z: z,
@@ -61,7 +67,7 @@ socket.on('robot-update', (d) => {
 
             x = [];
             y = [];
-            z = []; 
+            z = [];
             c = [];
 
             x.length = 0;

@@ -65,6 +65,7 @@ pyshell.on('message', function(buf) {
         prevRobotData = currRobotData
 
         if (enable_logging) robotstream.write(currRobotData + "\n")
+        
         console.log(currRobotData)
     }
 });
@@ -81,8 +82,8 @@ function checkRobotData(data1, data2){
     const data = data1.split(", ");
     const other2 = data2.split(", ")
 
-    for (var i =data.length - 1; i >= 0; i--) {
-        if(parseFloat(data[i]).toFixed(1) !== parseFloat(other2[i]).toFixed(1)) return false
+    for (var i = data.length - 1; i >= 0; i--) {
+        if(parseFloat(data[i]).toFixed() !== parseFloat(other2[i]).toFixed()) return false
     }
     return true
 }
@@ -141,7 +142,7 @@ function getAndParseXML() {
 
                 const s = Fx_newton.toFixed(4) + ',' + Fy_newton.toFixed(4) + ',' + Fz_newton.toFixed(4) + ',' + Tx_newton.toFixed(4) + ',' + Ty_newton.toFixed(4) + ',' + Tz_newton.toFixed(4);
 
-                //console.log(string)
+                console.log(s)
 
                 currData = string;
                 timeRecieved = Date.now()
@@ -165,9 +166,7 @@ function getAndParseXML() {
     });
 
     req.on('error', function(err) {
-    	if (err.code === "ECONNRESET") {
-        	
-        }
+    	if (err.code === "ECONNRESET") {}
     });
 
         req.end()
