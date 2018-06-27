@@ -8,6 +8,7 @@
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./website/sensors.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 
 <body onload="init()">
@@ -18,6 +19,7 @@
         <canvas id="all" style="width:100%; height:150px"></canvas>
         <h3>FX</h3>
         <canvas id="fx" style="width:100%; height:150px"></canvas>
+        <div id="graph"></div>
         <h3>FY</h3>
         <canvas id="fy" style="width:100%; height:150px"></canvas>
         <h3>FZ</h3>
