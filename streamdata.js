@@ -46,6 +46,11 @@ if (process.argv[2] === '-h') {
     }
 }
 
+setInterval(() => {
+    console.log(currRobotData)
+    console.log(currData)
+}, 500);
+
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
 // Use python shell
 var pyshell = new PythonShell('rtd.py', {
@@ -59,14 +64,14 @@ pyshell.on('message', function(buf) {
     if (buf != null && buf.length > 1) {
 
         currRobotData = buf.toString();
-        if(prevRobotData !== "NONE"  && checkRobotData(currRobotData, prevRobotData) === false){
+        if (prevRobotData !== "NONE" && checkRobotData(currRobotData, prevRobotData) === false) {
             io.sockets.emit('robot-update', { data: currRobotData })
         }
         prevRobotData = currRobotData
 
         if (enable_logging) robotstream.write(currRobotData + "\n")
-        
-        console.log(currRobotData)
+
+        // console.log(currRobotData)
     }
 });
 
@@ -78,12 +83,12 @@ pyshell.end((err, code, signal) => {
     }
 });
 
-function checkRobotData(data1, data2){
+function checkRobotData(data1, data2) {
     const data = data1.split(", ");
     const other2 = data2.split(", ")
 
     for (var i = data.length - 1; i >= 0; i--) {
-        if(parseFloat(data[i]).toFixed() !== parseFloat(other2[i]).toFixed()) return false
+        if (parseFloat(data[i]).toFixed() !== parseFloat(other2[i]).toFixed()) return false
     }
     return true
 }
@@ -142,7 +147,7 @@ function getAndParseXML() {
 
                 const s = Fx_newton.toFixed(4) + ',' + Fy_newton.toFixed(4) + ',' + Fz_newton.toFixed(4) + ',' + Tx_newton.toFixed(4) + ',' + Ty_newton.toFixed(4) + ',' + Tz_newton.toFixed(4);
 
-                console.log(s)
+                // console.log(s)
 
                 currData = string;
                 timeRecieved = Date.now()
@@ -159,79 +164,79 @@ function getAndParseXML() {
     });
 
     req.on('socket', function(socket) {
-            socket.setTimeout(100);
-            socket.on('timeout', function() {
-                req.abort();
-    		});
+        socket.setTimeout(100);
+        socket.on('timeout', function() {
+            req.abort();
+        });
     });
 
     req.on('error', function(err) {
-    	if (err.code === "ECONNRESET") {}
+        // if (err.code === "ECONNRESET") {}
     });
 
-        req.end()
-    }
+    req.end()
+}
 
-    //run it every X ms
-    setInterval(getAndParseXML, SENSOR_INTERVAL_TIME); //////////////////REENABLE WHEN SITE IS UP
+//run it every X ms
+setInterval(getAndParseXML, SENSOR_INTERVAL_TIME); //////////////////REENABLE WHEN SITE IS UP
 
-    //***************************************************WINDOWS CODE**************************************************///
-    if (process.platform === "win32") {
-        var rl = require("readline").createInterface({
-            input: process.stdin,
-            output: process.stdout
-        });
-
-        rl.on("SIGINT", function() { process.emit("SIGINT") });
-    }
-
-    //if sigint is captured then end the stream and exit the program
-    process.on("SIGINT", function() {
-        if (enable_logging) {
-            forcetorquestream.end();
-            robotstream.end()
-        }
-        process.exit();
+//***************************************************WINDOWS CODE**************************************************///
+if (process.platform === "win32") {
+    var rl = require("readline").createInterface({
+        input: process.stdin,
+        output: process.stdout
     });
 
-    //***************************************************API CODE**************************************************///
+    rl.on("SIGINT", function() { process.emit("SIGINT") });
+}
 
-    //create an api route
-    var router = express.Router();
+//if sigint is captured then end the stream and exit the program
+process.on("SIGINT", function() {
+    if (enable_logging) {
+        forcetorquestream.end();
+        robotstream.end()
+    }
+    process.exit();
+});
 
-    //make the output in json format
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(bodyParser.json());
-    app.use('/api', router);
+//***************************************************API CODE**************************************************///
 
-    //localhost:3000/api displays this message
-    router.get('/', function(req, res) { res.json({ message: 'hooray! welcome to our api!' }) });
+//create an api route
+var router = express.Router();
 
-    //localhost:3000/api/data returns the data 
-    router.get('/data', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData }) });
+//make the output in json format
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use('/api', router);
 
-    //localhost:3000/api/force
-    router.get('/force', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(0, 3) }) })
+//localhost:3000/api displays this message
+router.get('/', function(req, res) { res.json({ message: 'hooray! welcome to our api!' }) });
 
-    //localhost:3000/api/torque
-    router.get('/torque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(3, 6) }) })
+//localhost:3000/api/data returns the data 
+router.get('/data', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData }) });
 
-    //localhost:3000/api/routes
-    router.get('/routes', (req, res) => { res.json([{ data: "/api/data" }, { force: "/api/force" }, { torque: "api/torque" }]) })
+//localhost:3000/api/force
+router.get('/force', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(0, 3) }) })
 
-    //localhost:3000/api/robotxyz
-    router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(',').slice(0, 3) }) })
+//localhost:3000/api/torque
+router.get('/torque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(3, 6) }) })
 
-    //localhost:3000/api/robotxyz
-    router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(',').slice(3, 6) }) })
+//localhost:3000/api/routes
+router.get('/routes', (req, res) => { res.json([{ data: "/api/data" }, { force: "/api/force" }, { torque: "api/torque" }]) })
 
-    //non routed will just send you to the website localhost:3000/ 
-    app.get('/', (req, res) => { res.sendFile(__dirname + '/website/index.html') })
+//localhost:3000/api/robotxyz
+router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(',').slice(0, 3) }) })
 
-    app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/3d_plotting/main.html') })
+//localhost:3000/api/robotxyz
+router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(',').slice(3, 6) }) })
 
-    //used for other files that might be needed
-    app.use(express.static(__dirname + '/'));
+//non routed will just send you to the website localhost:3000/ 
+app.get('/', (req, res) => { res.sendFile(__dirname + '/website/index.html') })
 
-       //used for other files that might be needed
-    app.use(express.static(__dirname + '/3d_plotting/'));
+app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/3d_plotting/main.html') })
+
+//used for other files that might be needed
+app.use(express.static(__dirname + '/'));
+
+//used for other files that might be needed
+app.use(express.static(__dirname + '/3d_plotting/'));
