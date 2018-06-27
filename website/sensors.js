@@ -56,12 +56,7 @@ function initHost(hostId) {
     if (hostId === 'fx') {
 
         timeline.addTimeSeries(sensor, seriesOptions[0]);
-        Plotly.plot('graph', [{
-            y: fxx,
-            mode: 'lines',
-            line: { color: '#80CAF6' }
-        }]);
-
+    
     } else if (hostId === 'fy') {
 
         timeline.addTimeSeries(sensor, seriesOptions[1]);
@@ -101,23 +96,6 @@ function initHost(hostId) {
 
             if (hostId === 'fx') {
                 sensor.append(d, readings[0]);
-
-
-                if (fxx.length > 250) {
-                    console.log("purge")
-                    Plotly.purge('graph');
-                    fxx = [];
-                    Plotly.plot('graph', [{
-                        y: fxx,
-                        mode: 'lines',
-                        line: { color: '#80CAF6' }
-                    }]);
-                } else {
-                    fxx.push(readings[0]);
-                    Plotly.extendTraces('graph', {
-                        y: [fxx]
-                    }, [0]);
-                }
             } else if (hostId === 'fy') {
                 sensor.append(d, readings[1])
             } else if (hostId === 'fz') {
