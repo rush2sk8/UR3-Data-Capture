@@ -47,7 +47,7 @@ function initHost(hostId) {
     var tx = new TimeSeries();
     var ty = new TimeSeries();
     var tz = new TimeSeries();
-
+    var fxx = []
     var socket = io.connect('http://localhost:3000');
 
     // Build the timeline
@@ -56,6 +56,11 @@ function initHost(hostId) {
     if (hostId === 'fx') {
 
         timeline.addTimeSeries(sensor, seriesOptions[0]);
+        Plotly.plot('graph', [{
+            y: fxx,
+            mode: 'lines',
+            line: { color: '#80CAF6' }
+        }]);
 
     } else if (hostId === 'fy') {
 
@@ -95,7 +100,24 @@ function initHost(hostId) {
             var d = new Date().getTime()
 
             if (hostId === 'fx') {
-                sensor.append(d, readings[0])
+                sensor.append(d, readings[0]);
+
+
+                if (fxx.length > 250) {
+                    console.log("purge")
+                    Plotly.purge('graph');
+                    fxx = [];
+                    Plotly.plot('graph', [{
+                        y: fxx,
+                        mode: 'lines',
+                        line: { color: '#80CAF6' }
+                    }]);
+                } else {
+                    fxx.push(readings[0]);
+                    Plotly.extendTraces('graph', {
+                        y: [fxx]
+                    }, [0]);
+                }
             } else if (hostId === 'fy') {
                 sensor.append(d, readings[1])
             } else if (hostId === 'fz') {

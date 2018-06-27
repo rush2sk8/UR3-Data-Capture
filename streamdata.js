@@ -24,7 +24,7 @@ var timeRecieved = 0;
 var prevRobotData = "NONE"
 
 //*************************************************CMD LINE ARGS CODE*******************************************///
-if (process.argv[2] === '-h') {
+if (process.argv[2] === '-h' || process.argv[2] === '-help') {
     console.log("usage: node streamdata.js [-h] [-log t/f]");
     process.exit();
 } else if (process.argv[2] === '-log') {
@@ -36,6 +36,7 @@ if (process.argv[2] === '-h') {
         //create the write stream file
         forcetorquestream = fs.createWriteStream(Date.now() + '_forcetorque_data.csv');
 
+        //stream to write robot data to the file 
         robotstream = fs.createWriteStream(Date.now() + '_robot_data.csv');
 
         //if logging is enabled write this header
@@ -46,10 +47,11 @@ if (process.argv[2] === '-h') {
     }
 }
 
+//write the information to the console every X ms
 setInterval(() => {
     console.log(currRobotData)
     console.log(currData)
-}, 500);
+}, 250);
 
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
 // Use python shell
@@ -83,13 +85,14 @@ pyshell.end((err, code, signal) => {
     }
 });
 
+//makes sure that the current data is different than the previous data
 function checkRobotData(data1, data2) {
     const data = data1.split(", ");
     const other2 = data2.split(", ")
 
-    for (var i = data.length - 1; i >= 0; i--) {
+    for (var i = data.length - 1; i >= 0; i--)
         if (parseFloat(data[i]).toFixed() !== parseFloat(other2[i]).toFixed()) return false
-    }
+
     return true
 }
 
@@ -162,7 +165,7 @@ function getAndParseXML() {
 
         });
     });
-
+    //if there is a timeout then stop
     req.on('socket', function(socket) {
         socket.setTimeout(100);
         socket.on('timeout', function() {
