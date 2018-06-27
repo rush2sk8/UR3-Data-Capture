@@ -21,7 +21,7 @@ const PythonShell = require('python-shell');
 var currData = 'NONE';
 var currRobotData = 'NONE'
 var timeRecieved = 0;
-
+var prevRobotData = "NONE"
 
 //*************************************************CMD LINE ARGS CODE*******************************************///
 if (process.argv[2] === '-h') {
@@ -59,11 +59,13 @@ pyshell.on('message', function(buf) {
     if (buf != null && buf.length > 1) {
 
         currRobotData = buf.toString();
-
-        io.sockets.emit('robot-update', { data: currRobotData })
+        if(prevRobotData !== "NONE"  && checkRobotData(currRobotData, prevRobotData) === false){
+            io.sockets.emit('robot-update', { data: currRobotData })
+        }
+        prevRobotData = currRobotData
 
         if (enable_logging) robotstream.write(currRobotData + "\n")
-        console.log("data: " + currRobotData)
+        console.log(currRobotData)
     }
 });
 
@@ -75,6 +77,15 @@ pyshell.end((err, code, signal) => {
     }
 });
 
+function checkRobotData(data1, data2){
+    const data = data1.split(", ");
+    const other2 = data2.split(", ")
+
+    for (var i =data.length - 1; i >= 0; i--) {
+        if(parseFloat(data[i]).toFixed(1) !== parseFloat(other2[i]).toFixed(1)) return false
+    }
+    return true
+}
 
 //********************************************GET AND COMPUTE DATA CODE*******************************************///
 //run a GET to the XML status
@@ -130,7 +141,7 @@ function getAndParseXML() {
 
                 const s = Fx_newton.toFixed(4) + ',' + Fy_newton.toFixed(4) + ',' + Fz_newton.toFixed(4) + ',' + Tx_newton.toFixed(4) + ',' + Ty_newton.toFixed(4) + ',' + Tz_newton.toFixed(4);
 
-                console.log(string)
+                //console.log(string)
 
                 currData = string;
                 timeRecieved = Date.now()
@@ -219,8 +230,6 @@ function getAndParseXML() {
     app.get('/', (req, res) => { res.sendFile(__dirname + '/website/index.html') })
 
     app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/3d_plotting/main.html') })
-
-    
 
     //used for other files that might be needed
     app.use(express.static(__dirname + '/'));
