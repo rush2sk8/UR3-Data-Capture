@@ -250,12 +250,19 @@ app.use(express.static(__dirname + '/website/adddata/'));
 io.sockets.on('connection', (socket) => {
 
     socket.on('add', (a) => {
-        //todo add 
+        console.log("data")
+        writeNewConfiguration(a.data)
     })
 });
 
 
 
-function writeNewConfiguration(data){
-
+function writeNewConfiguration(data) {
+    var string = "<?xml version=\"1.0 \"?>" + "\n" + "<rtde_config>" + "\n" + " <recipe key=\"out\">" + "\n" + "<field name=\"actual_TCP_pose\" type=\"VECTOR6D\"/>" + "\n"
+    const entries = data.split(',');
+    for (var i = 0; i < entries.length; i++) {
+        string += entries[i] + "\n"
+    }
+    string += "</recipe>" + "\n" + "</rtde_config>" 
+    fs.writeFileSync("record_configuration.xml", string)
 }
