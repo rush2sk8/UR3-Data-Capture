@@ -202,7 +202,7 @@ process.on("SIGINT", function() {
     process.exit();
 });
 
-//***************************************************WEBSITE CODE**************************************************///
+//***************************************************API CODE**************************************************///
 
 //create an api route
 var router = express.Router();
@@ -224,6 +224,9 @@ router.get('/force', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - tim
 //localhost:3000/api/torque
 router.get('/torque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(3, 6) }) })
 
+//localhost:3000/api/routes
+router.get('/routes', (req, res) => { res.json([{ data: "/api/data" }, { force: "/api/force" }, { torque: "api/torque" }]) })
+
 //localhost:3000/api/robotxyz
 router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(',').slice(0, 3) }) })
 
@@ -235,12 +238,11 @@ app.get('/', (req, res) => { res.sendFile(__dirname + '/website/index.html') })
 
 app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/website/3d_plotting/main.html') })
 
-app.get('/adddata', (req, res) => { res.sendFile(__dirname + '/website/adddata/main.html') })
-
 //used for other files that might be needed
 app.use(express.static(__dirname + '/'));
 
 //used for other files that might be needed
+<<<<<<< HEAD
 app.use(express.static(__dirname + '/website/3d_plotting/'));
 
 //add data 
@@ -266,3 +268,6 @@ function writeNewConfiguration(data) {
     string += "</recipe>" + "\n" + "</rtde_config>" 
     fs.writeFileSync("record_configuration.xml", string)
 }
+=======
+app.use(express.static(__dirname + '/website/3d_plotting/'));
+>>>>>>> parent of 115b730... website now sends additional data back to website
