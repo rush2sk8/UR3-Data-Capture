@@ -31,7 +31,6 @@ function initText() {
             document.getElementById('rx').innerHTML = "RX: " + readings[3]
             document.getElementById('ry').innerHTML = "RY: " + readings[4]
             document.getElementById('rz').innerHTML = "RZ: " + readings[5]
-            console.log(d)
         }
     });
 }
@@ -47,7 +46,6 @@ function initHost(hostId) {
     var tx = new TimeSeries();
     var ty = new TimeSeries();
     var tz = new TimeSeries();
-    var fxx = []
     var socket = io.connect('http://localhost:3000');
 
     // Build the timeline
