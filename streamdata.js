@@ -258,7 +258,7 @@ io.sockets.on('connection', (socket) => {
 
 
 function writeNewConfiguration(data) {
-    var string = "<?xml version=\"1.0 \"?>" + "\n" + "<rtde_config>" + "\n" + " <recipe key=\"out\">" + "\n" + "<field name=\"actual_TCP_pose\" type=\"VECTOR6D\"/>" + "\n"
+    var string = "<?xml version=\"1.0 \"?>" + "\n" + "<rtde_config>" + "\n" + " <recipe key=\"out\">" + "\n" + "<field name=\"actual_TCP_pose\" type=\"VECTOR6D\"/>" 
     const entries = data.split(',');
     for (var i = 0; i < entries.length; i++) {
         string += entries[i] + "\n"

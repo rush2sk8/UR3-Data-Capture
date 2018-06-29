@@ -2,6 +2,7 @@
 <rtde_config>
  <recipe key="out">
 <field name="actual_TCP_pose" type="VECTOR6D"/>
-
+<field name="target_qd" type="VECTOR6D"/>
+<field name="target_qdd" type="VECTOR6D"/>
 </recipe>
 </rtde_config>
