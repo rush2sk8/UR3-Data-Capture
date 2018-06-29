@@ -31,11 +31,23 @@ function initText() {
             document.getElementById('rx').innerHTML = "RX: " + readings[3]
             document.getElementById('ry').innerHTML = "RY: " + readings[4]
             document.getElementById('rz').innerHTML = "RZ: " + readings[5]
-            if(readings.length > 6){
-                
+            if (readings.length > 6) {
+                var string = "";
+
+                for (var i = 6; i < readings.length; i++) {
+                    string += readings[i] + " ";
+                }
+
+                document.getElementById('extra').innerHTML = "<h3>" + string + "</h3>";
             }
         }
     });
+
+    socket.on('add_data', (d) => {
+        if (d != null) {
+            console.log(d.data)
+        }
+    })
 }
 
 function initHost(hostId) {
@@ -57,7 +69,7 @@ function initHost(hostId) {
     if (hostId === 'fx') {
 
         timeline.addTimeSeries(sensor, seriesOptions[0]);
-    
+
     } else if (hostId === 'fy') {
 
         timeline.addTimeSeries(sensor, seriesOptions[1]);

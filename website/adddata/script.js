@@ -3,7 +3,7 @@ function submit() {
     var socket = io.connect('http://localhost:3000');
 
     var dataa = [""]
-
+    var toSend = [];
     const table = document.getElementById('table')
 
     var x = document.getElementsByClassName('box');
@@ -11,12 +11,15 @@ function submit() {
 
         if (x[i].checked) {
             const string = "<field name=\"" + outputs[i] + "\" type=\"" + table.rows[i].cells[1].innerHTML + "\"/>";
+            toSend.push(outputs[i])
+            toSend.push(table.rows[i].cells[1].innerHTML)
             dataa.push(string)
             console.log(string)
         }
     }
 
     socket.emit('add', { data: dataa.toString() })
+    socket.emit('add_data', { data: toSend.toString() })
 
     setTimeout(() => {
         window.location = "/";

@@ -22,6 +22,7 @@ var currData = 'NONE';
 var currRobotData = 'NONE'
 var timeRecieved = 0;
 var prevRobotData = "NONE"
+var extraRobotData = []
 
 //*************************************************CMD LINE ARGS CODE*******************************************///
 if (process.argv[2] === '-h' || process.argv[2] === '-help') {
@@ -253,15 +254,24 @@ io.sockets.on('connection', (socket) => {
         console.log("data")
         writeNewConfiguration(a.data)
     })
+
+    socket.on('add_data', (d) => {
+        var data = d.data.split(',');
+        console.log(data)
+
+
+    })
 });
 
 
 function writeNewConfiguration(data) {
-    var string = "<?xml version=\"1.0\"?>" + "\n" + "<rtde_config>" + "\n" + " <recipe key=\"out\">" + "\n" + "<field name=\"actual_TCP_pose\" type=\"VECTOR6D\"/>" 
+    var string = "<?xml version=\"1.0\"?>" + "\n" + "<rtde_config>" + "\n" + " <recipe key=\"out\">" + "\n" + "<field name=\"actual_TCP_pose\" type=\"VECTOR6D\"/>"
     const entries = data.split(',');
+
     for (var i = 0; i < entries.length; i++) {
         string += entries[i] + "\n"
     }
-    string += "</recipe>" + "\n" + "</rtde_config>" 
+
+    string += "</recipe>" + "\n" + "</rtde_config>"
     fs.writeFileSync("record_configuration.xml", string)
 }
