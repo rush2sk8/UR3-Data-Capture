@@ -242,7 +242,6 @@ app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/website/3d_plott
 app.use(express.static(__dirname + '/'));
 
 //used for other files that might be needed
-<<<<<<< HEAD
 app.use(express.static(__dirname + '/website/3d_plotting/'));
 
 //add data 
@@ -268,6 +267,6 @@ function writeNewConfiguration(data) {
     string += "</recipe>" + "\n" + "</rtde_config>" 
     fs.writeFileSync("record_configuration.xml", string)
 }
-=======
+ 
 app.use(express.static(__dirname + '/website/3d_plotting/'));
->>>>>>> parent of 115b730... website now sends additional data back to website
+ 
