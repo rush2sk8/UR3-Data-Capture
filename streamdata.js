@@ -23,7 +23,7 @@ var currRobotData = 'NONE'
 var timeRecieved = 0;
 var prevRobotData = "NONE"
 var extraRobotData = []
-
+var pyshell;
 //*************************************************CMD LINE ARGS CODE*******************************************///
 if (process.argv[2] === '-h' || process.argv[2] === '-help') {
     console.log("usage: node streamdata.js [-h] [-log t/f]");
@@ -55,36 +55,41 @@ setInterval(() => {
 }, 250);
 
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
-// Use python shell
-var pyshell = new PythonShell('rtd.py', {
-    mode: 'text',
-    pythonOptions: ['-u'], // get print results in real-time
-});
+function runPythonProcess() {
 
-//when we get a message from the script
-pyshell.on('message', function(buf) {
+    // Use python shell
+    pyshell = new PythonShell('rtd.py', {
+        mode: 'text',
+        pythonOptions: ['-u'], // get print results in real-time
+    });
 
-    if (buf != null && buf.length > 1) {
+    //when we get a message from the script
+    pyshell.on('message', function(buf) {
 
-        currRobotData = buf.toString();
-        if (prevRobotData !== "NONE" && checkRobotData(currRobotData, prevRobotData) === false) {
-            io.sockets.emit('robot-update', { data: currRobotData })
+        if (buf != null && buf.length > 1) {
+
+            currRobotData = buf.toString();
+            if (prevRobotData !== "NONE" && checkRobotData(currRobotData, prevRobotData) === false) {
+                io.sockets.emit('robot-update', { data: currRobotData })
+            }
+            prevRobotData = currRobotData
+
+            if (enable_logging) robotstream.write(currRobotData + "\n")
+
+            // console.log(currRobotData)
         }
-        prevRobotData = currRobotData
+    });
 
-        if (enable_logging) robotstream.write(currRobotData + "\n")
+    //catch the error where the python script fails
+    pyshell.end((err, code, signal) => {
+        if (err) {
+            console.log('The exit code was: ' + code);
+            console.log('The exit signal was: ' + signal);
+        }
+    });
+}
 
-        // console.log(currRobotData)
-    }
-});
-
-//catch the error where the python script fails
-pyshell.end((err, code, signal) => {
-    if (err) {
-        console.log('The exit code was: ' + code);
-        console.log('The exit signal was: ' + signal);
-    }
-});
+runPythonProcess();
 
 //makes sure that the current data is different than the previous data
 function checkRobotData(data1, data2) {
@@ -258,8 +263,8 @@ io.sockets.on('connection', (socket) => {
     socket.on('add_data', (d) => {
         var data = d.data.split(',');
         console.log(data)
-
-
+        pyshell.childProcess.kill('SIGINT')
+        runPythonProcess();
     })
 });
 
