@@ -50,7 +50,7 @@ if (process.argv[2] === '-h' || process.argv[2] === '-help') {
 //write the information to the console every X ms
 setInterval(() => {
     console.log(currRobotData)
-    console.log(currData)
+    //console.log(currData)
 }, 250);
 
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
@@ -202,7 +202,7 @@ process.on("SIGINT", function() {
     process.exit();
 });
 
-//***************************************************API CODE**************************************************///
+//***************************************************WEBSITE CODE**************************************************///
 
 //create an api route
 var router = express.Router();
@@ -224,9 +224,6 @@ router.get('/force', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - tim
 //localhost:3000/api/torque
 router.get('/torque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(3, 6) }) })
 
-//localhost:3000/api/routes
-router.get('/routes', (req, res) => { res.json([{ data: "/api/data" }, { force: "/api/force" }, { torque: "api/torque" }]) })
-
 //localhost:3000/api/robotxyz
 router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(',').slice(0, 3) }) })
 
@@ -237,6 +234,8 @@ router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(
 app.get('/', (req, res) => { res.sendFile(__dirname + '/website/index.html') })
 
 app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/website/3d_plotting/main.html') })
+
+app.get('/adddata', (req, res) => { res.sendFile(__dirname + '/website/adddata/main.html') })
 
 //used for other files that might be needed
 app.use(express.static(__dirname + '/'));
@@ -257,9 +256,8 @@ io.sockets.on('connection', (socket) => {
 });
 
 
-
 function writeNewConfiguration(data) {
-    var string = "<?xml version=\"1.0 \"?>" + "\n" + "<rtde_config>" + "\n" + " <recipe key=\"out\">" + "\n" + "<field name=\"actual_TCP_pose\" type=\"VECTOR6D\"/>" 
+    var string = "<?xml version=\"1.0\"?>" + "\n" + "<rtde_config>" + "\n" + " <recipe key=\"out\">" + "\n" + "<field name=\"actual_TCP_pose\" type=\"VECTOR6D\"/>" 
     const entries = data.split(',');
     for (var i = 0; i < entries.length; i++) {
         string += entries[i] + "\n"
@@ -267,6 +265,3 @@ function writeNewConfiguration(data) {
     string += "</recipe>" + "\n" + "</rtde_config>" 
     fs.writeFileSync("record_configuration.xml", string)
 }
- 
-app.use(express.static(__dirname + '/website/3d_plotting/'));
- 

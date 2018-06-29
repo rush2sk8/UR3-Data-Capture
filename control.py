@@ -2,10 +2,6 @@ import socket
 import time
 from math import radians
 
-def getMovejString(degArray): 
-	return "movej([" + str(radians(degArray[0])) + ", " + str(radians(degArray[1]))  + ", " +str(radians(degArray[2])) + ", " + str(radians(degArray[3]))  + ", "  + str(radians(degArray[4]))  + ", "  + str(radians(degArray[5]))  + "], a=1.3962634015954636, v=1.0471975511965976)" + "\n"
-
-
 HOST = "10.20.0.25"
 PORT = 30002
 RADIANS = 0.0174533
@@ -33,3 +29,5 @@ s.close()
 print repr(data).decode('utf-8')
 print "Program finish"
 
+def getMovejString(degArray): 
+	return "movej([" + str(radians(degArray[0])) + ", " + str(radians(degArray[1]))  + ", " +str(radians(degArray[2])) + ", " + str(radians(degArray[3]))  + ", "  + str(radians(degArray[4]))  + ", "  + str(radians(degArray[5]))  + "], a=1.3962634015954636, v=1.0471975511965976)" + "\n"
