@@ -8,6 +8,7 @@
     <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./website/sensors.js"></script>
+    <link rel="stylesheet" href="./website/styles.css">
 </head>
 
 <body onload="init()">
@@ -39,11 +40,15 @@
         <h3 id="rx">RX:<h3>
         <h3 id="ry">RY:<h3>
         <h3 id="rz">RZ:<h3>
-        <h1>Additional Robot Data</h1>
-          <form>
-            <button formaction="./adddata">Monitor Additional Data</button>
+        <div class="title">Additional Robot Data</div>
+            <div class="block">
+         <form>
+            <button formaction="./adddata">+</button>
         </form>
+        <body style="margin: 0;">
+       </div>
         <div id="extra"></div>
     </body>
- 
+    </body>
+
 </html>

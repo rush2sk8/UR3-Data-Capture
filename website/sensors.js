@@ -65,7 +65,7 @@ function initSockets() {
             var htmlData = "";
             for (var i = 0; i < data.length; i++) {
                 const split = data[i].split(':')
-                htmlData += "<h3 id=\"" + split[0] + "\" class=\"extra_data\">" + split[0] + ": <h3>" + "\n";
+                htmlData += "<h4 id=\"" + split[0] + "\" class=\"extra_data\">" + split[0] + ": <h4>" + "\n";
             }
 
             //set the html

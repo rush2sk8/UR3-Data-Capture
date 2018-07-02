@@ -30,6 +30,7 @@ var pyshell;
 if (process.argv[2] === '-h' || process.argv[2] === '-help') {
     console.log("usage: node streamdata.js [-h] [-log t/f]");
     process.exit();
+    
 } else if (process.argv[2] === '-log') {
     const flag = process.argv[3];
 
@@ -52,6 +53,7 @@ if (process.argv[2] === '-h' || process.argv[2] === '-help') {
 
 //write the information to the console every X ms
 setInterval(() => {
+	//clear command
 	console.log('\033c')
     console.log("CRD: " + currRobotData)
     console.log("CD: " + currData)

@@ -1,0 +1,13 @@
+  .title {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 30px;
+      margin: 0
+  }
+
+  .block {
+      display: inline-block;
+      vertical-align: middle;
+      padding-left: 3px;
+      margin: 0
+  }
