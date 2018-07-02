@@ -12,7 +12,7 @@ if (split.length > 6 && extraRobotData.length >= 1) {
     for (var i = 6; i < split.length; i++) {
 
         const extra = extraRobotData[x].split(":")[1]
-console.log(toSend)
+
         if (extra === "VECTOR6D" || extra === "VECTOR6INT32") {
 
             for (var j = i; j < i + 5; j++)

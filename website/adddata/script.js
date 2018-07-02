@@ -11,7 +11,7 @@ function submit() {
 
         if (x[i].checked) {
             const string = "<field name=\"" + outputs[i] + "\" type=\"" + table.rows[i].cells[1].innerHTML + "\"/>";
-            toSend.push(outputs[i]+":"+ table.rows[i].cells[1].innerHTML)
+            toSend.push(outputs[i] + ":" + table.rows[i].cells[1].innerHTML)
             dataa.push(string)
             console.log(string)
         }
@@ -24,4 +24,14 @@ function submit() {
         window.location = "/";
     }, 500);
 
+}
+
+function init() {
+    var socket = io.connect('http://localhost:3000');
+
+    socket.on('refresh', (d) => {
+        console.log('reload')
+        location.reload(true)
+        window.location = "/";
+    })
 }

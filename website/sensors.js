@@ -26,6 +26,7 @@ function initText() {
     socket.on('robot-update', (d) => {
         if (d != null) {
             var readings = d.data.split(',');
+            console.log("r:"+readings)
             document.getElementById('x').innerHTML = "X: " + readings[0]
             document.getElementById('y').innerHTML = "Y: " + readings[1]
             document.getElementById('z').innerHTML = "Z: " + readings[2]
@@ -33,13 +34,14 @@ function initText() {
             document.getElementById('ry').innerHTML = "RY: " + readings[4]
             document.getElementById('rz').innerHTML = "RZ: " + readings[5]
             if (readings.length > 6) {
+
                 var string = "";
 
                 for (var i = 6; i < readings.length; i++) {
                     string += readings[i] + " ";
                 }
-
-                document.getElementById('extra').innerHTML = "<h3>" + readings + "</h3>";
+                console.log(string)
+                document.getElementById('extra').innerHTML = "<h3>" + string + "</h3>";
             }
         }
     });
