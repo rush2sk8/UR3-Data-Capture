@@ -21,9 +21,11 @@ const PythonShell = require('python-shell');
 var currData = 'NONE';
 var currRobotData = 'NONE'
 var timeRecieved = 0;
+
 var prevRobotData = "NONE"
 var extraRobotData = []
 var pyshell;
+
 //*************************************************CMD LINE ARGS CODE*******************************************///
 if (process.argv[2] === '-h' || process.argv[2] === '-help') {
     console.log("usage: node streamdata.js [-h] [-log t/f]");
@@ -50,8 +52,8 @@ if (process.argv[2] === '-h' || process.argv[2] === '-help') {
 
 //write the information to the console every X ms
 setInterval(() => {
-    console.log(currRobotData)
-    //console.log(currData)
+    console.log("CRD:" + currRobotData)
+    console.log("CD:" + currData)
 }, 250);
 
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
@@ -65,18 +67,53 @@ function runPythonProcess() {
 
     //when we get a message from the script
     pyshell.on('message', function(buf) {
+        currRobotData = buf.toString();
 
         if (buf != null && buf.length > 1) {
 
-            currRobotData = buf.toString();
-            if (prevRobotData !== "NONE" && checkRobotData(currRobotData, prevRobotData) === false) {
-                io.sockets.emit('robot-update', { data: currRobotData })
+            var split = currRobotData.split(",")
+            var toSend = ""
+            var x = 0;
+
+            for (var i = 0; i < 6; i++) toSend += split[i] + ","
+
+            if (split.length > 6 && extraRobotData.length >= 1) {
+
+                for (var i = 6; i < split.length; i++) {
+
+                    const extra = extraRobotData[x].split(":")[1]
+
+                    if (extra === "VECTOR6D" || extra === "VECTOR6INT32") {
+
+                        for (var j = i; j < i + 5; j++)
+                            toSend += split[j] + '+'
+
+                        toSend += split[i + 5] + ",";
+                        i += 5;
+
+                    } else if (extra === "VECTOR3D") {
+                        for (var j = i; j < i + 2; j++)
+                            toSend += split[j] + '+'
+
+                        toSend += split[i + 2] + ",";
+                        i += 2
+
+                    } else
+                        toSend += split[i] + ","
+
+                    x++;
+                }
+            }
+             toSend = toSend.substring(0, toSend.length - 1)
+
+            if (prevRobotData !== "NONE" /*&& checkRobotData(currRobotData, prevRobotData) === false*/) {
+    
+                io.sockets.emit('robot-update', { data: toSend })
             }
             prevRobotData = currRobotData
 
             if (enable_logging) robotstream.write(currRobotData + "\n")
 
-            // console.log(currRobotData)
         }
     });
 
@@ -96,7 +133,7 @@ function checkRobotData(data1, data2) {
     const data = data1.split(", ");
     const other2 = data2.split(", ")
 
-    for (var i = data.length - 1; i >= 0; i--)
+    for (var i = data1.length; i >= 0; i--)
         if (parseFloat(data[i]).toFixed() !== parseFloat(other2[i]).toFixed()) return false
 
     return true
@@ -155,9 +192,6 @@ function getAndParseXML() {
                 const string = "Fx:" + Fx_newton.toFixed(4) + ',' + "Fy:" + Fy_newton.toFixed(4) + ',' + "Fz:" + Fz_newton.toFixed(4) + ',' + "Tx:" + Tx_newton.toFixed(4) + ',' + "Ty:" + Ty_newton.toFixed(4) + ',' + "Tz:" + Tz_newton.toFixed(4);
 
                 const s = Fx_newton.toFixed(4) + ',' + Fy_newton.toFixed(4) + ',' + Fz_newton.toFixed(4) + ',' + Tx_newton.toFixed(4) + ',' + Ty_newton.toFixed(4) + ',' + Tz_newton.toFixed(4);
-
-                // console.log(s)
-
                 currData = string;
                 timeRecieved = Date.now()
 
@@ -208,6 +242,11 @@ process.on("SIGINT", function() {
     process.exit();
 });
 
+setTimeout(()=>{
+	 io.sockets.emit('refresh', { data: "none" })
+	 console.log("refresh")
+}, 1000)
+
 //***************************************************WEBSITE CODE**************************************************///
 
 //create an api route
@@ -256,16 +295,20 @@ app.use(express.static(__dirname + '/website/adddata/'));
 io.sockets.on('connection', (socket) => {
 
     socket.on('add', (a) => {
-        console.log("data")
         writeNewConfiguration(a.data)
-    })
+    });
 
     socket.on('add_data', (d) => {
         var data = d.data.split(',');
-        console.log(data)
+
         pyshell.childProcess.kill('SIGINT')
         runPythonProcess();
-    })
+
+        extraRobotData = []
+        extraRobotData = data;
+
+        console.log(extraRobotData + " length: " + extraRobotData.length)
+    });
 });
 
 

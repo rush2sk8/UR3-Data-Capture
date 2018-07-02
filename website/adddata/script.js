@@ -11,8 +11,7 @@ function submit() {
 
         if (x[i].checked) {
             const string = "<field name=\"" + outputs[i] + "\" type=\"" + table.rows[i].cells[1].innerHTML + "\"/>";
-            toSend.push(outputs[i])
-            toSend.push(table.rows[i].cells[1].innerHTML)
+            toSend.push(outputs[i]+":"+ table.rows[i].cells[1].innerHTML)
             dataa.push(string)
             console.log(string)
         }

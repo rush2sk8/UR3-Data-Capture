@@ -2,7 +2,7 @@
 <rtde_config>
  <recipe key="out">
 <field name="actual_TCP_pose" type="VECTOR6D"/>
-<field name="tool_output_current" type="DOUBLE"/>
-<field name="tool_temperature" type="DOUBLE"/>
+<field name="timestamp" type="DOUBLE"/>
+<field name="target_q" type="VECTOR6D"/>
 </recipe>
 </rtde_config>

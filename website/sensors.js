@@ -8,6 +8,7 @@ function init() {
     initHost('tz');
     initHost('all');
     initText();
+    console.log('init')
 }
 
 var seriesOptions = [
@@ -38,7 +39,7 @@ function initText() {
                     string += readings[i] + " ";
                 }
 
-                document.getElementById('extra').innerHTML = "<h3>" + string + "</h3>";
+                document.getElementById('extra').innerHTML = "<h3>" + readings + "</h3>";
             }
         }
     });
@@ -46,7 +47,13 @@ function initText() {
     socket.on('add_data', (d) => {
         if (d != null) {
             console.log(d.data)
+
         }
+    })
+
+    socket.on('refresh', (d) => {
+        console.log('reload')
+        location.reload(true)
     })
 }
 
