@@ -26,6 +26,24 @@ function submit() {
 
 }
 
+function selectAll() {
+    boxes(true)
+}
+
+function clearAll() {
+    boxes(false)
+}
+
+function boxes(flag) {
+    const table = document.getElementById('table')
+
+    var x = document.getElementsByClassName('box');
+
+    for (var i = x.length - 1; i >= 0; i--) {
+        x[i].checked = flag;
+    }
+}
+
 function init() {
     var socket = io.connect('http://localhost:3000');
 

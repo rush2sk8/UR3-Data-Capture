@@ -52,8 +52,8 @@ if (process.argv[2] === '-h' || process.argv[2] === '-help') {
 
 //write the information to the console every X ms
 setInterval(() => {
-    console.log("CRD:" + currRobotData)
-    console.log("CD:" + currData)
+    console.log("CRD: " + currRobotData)
+    console.log("CD: " + currData)
 }, 250);
 
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
@@ -71,12 +71,14 @@ function runPythonProcess() {
 
         if (buf != null && buf.length > 1) {
 
+            //basicall extract the mandatory xyz rx ry rz data and check if there is any extra
             var split = currRobotData.split(",")
             var toSend = ""
             var x = 0;
 
             for (var i = 0; i < 6; i++) toSend += split[i] + ","
 
+            //if there is extra data put it in a different format based on what the data type is 
             if (split.length > 6) {
 
                 for (var i = 6; i < split.length; i++) {
@@ -104,15 +106,19 @@ function runPythonProcess() {
                     x++;
                 }
             }
-             toSend = toSend.substring(0, toSend.length - 1)
 
-            if (prevRobotData !== "NONE" /*&& checkRobotData(currRobotData, prevRobotData) === false*/) {
-    
+            //chop off the last comma
+            toSend = toSend.substring(0, toSend.length - 1)
+
+            //dont emit empty strings
+            if (prevRobotData !== "NONE") {
+
                 io.sockets.emit('robot-update', { data: toSend })
             }
+
             prevRobotData = currRobotData
 
-            if (enable_logging) robotstream.write(currRobotData + "\n")
+            if (enable_logging) robotstream.write(toSend + "\n")
 
         }
     });
@@ -126,6 +132,7 @@ function runPythonProcess() {
     });
 }
 
+//run the code once
 runPythonProcess();
 
 //********************************************GET AND COMPUTE DATA CODE*******************************************///
@@ -231,9 +238,9 @@ process.on("SIGINT", function() {
     process.exit();
 });
 
-setTimeout(()=>{
-	 io.sockets.emit('refresh', { data: "none" })
-	 console.log("refresh")
+setTimeout(() => {
+    io.sockets.emit('refresh', { data: "none" })
+    console.log("refresh")
 }, 1000)
 
 //***************************************************WEBSITE CODE**************************************************///
@@ -265,9 +272,9 @@ router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(','
 router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(',').slice(3, 6) }) })
 
 //non routed will just send you to the website localhost:3000/ 
-app.get('/', (req, res) => { 
-	res.sendFile(__dirname + '/website/index.html');  	
-	setTimeout(()=>{	io.sockets.emit('add_labels', {data: extraRobotData.toString()}); },500)
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/website/index.html');
+    setTimeout(() => { io.sockets.emit('add_labels', { data: extraRobotData.toString() }); }, 500)
 })
 
 app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/website/3d_plotting/main.html') })
@@ -286,10 +293,12 @@ app.use(express.static(__dirname + '/website/adddata/'));
 //capture data back from the website
 io.sockets.on('connection', (socket) => {
 
+    //the add data page will write a new config
     socket.on('add', (a) => {
         writeNewConfiguration(a.data)
     });
 
+    //kill the python process and replace it with a new one which loads the new configuration
     socket.on('add_data', (d) => {
         var data = d.data.split(',');
 
@@ -301,9 +310,10 @@ io.sockets.on('connection', (socket) => {
 
         console.log(extraRobotData + " length: " + extraRobotData.length)
 
-        setTimeout(()=>{
-        	io.sockets.emit('add_labels', {data: extraRobotData.toString()});
-        },1000)
+        //emit this to the main page so that you can keep the additional data persistent
+        setTimeout(() => {
+            io.sockets.emit('add_labels', { data: extraRobotData.toString() });
+        }, 1000)
     });
 });
 

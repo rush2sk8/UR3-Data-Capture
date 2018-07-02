@@ -3,548 +3,526 @@
 <link rel="stylesheet" href="./styles.css">
 <script src="./website/adddata/script.js"></script>
 <script src="/socket.io/socket.io.js"></script>
+
 <body onload="init()">
 
-<body>
-    <h2>Choose what data you would like to see</h2>
-    <h3><strong>Robot controller outputs</strong></h3>
-    <div class="table-wrap">
-        <table border="1" class="confluenceTable tablesorter tablesorter-default" id="table">
-            <tbody>
-                <tr>
-                    <td>timestamp</td>
-                    <td>DOUBLE</td>
-                    <td>Time elapsed since the controller was started [s]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="timestamp"><span class="checkmark"></span></label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>target_q</td>
-                    <td>VECTOR6D</td>
-                    <td>Target joint positions</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="target_q"><span class="checkmark"></span></label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>target_qd</td>
-                    <td>VECTOR6D</td>
-                    <td>Target joint velocities</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="target_qd"><span class="checkmark"></span></label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>target_qdd</td>
-                    <td>VECTOR6D</td>
-                    <td>Target joint accelerations</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="target_qdd"><span class="checkmark"></span></label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>target_current</td>
-                    <td>VECTOR6D</td>
-                    <td>Target joint currents</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="target_current"><span class="checkmark"></span></label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>target_moment</td>
-                    <td>VECTOR6D</td>
-                    <td>Target joint moments (torques)</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="target_moment"><span class="checkmark"></span></label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>actual_q</td>
-                    <td>VECTOR6D</td>
-                    <td>Actual joint positions</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_q"><span class="checkmark"></span></label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>actual_qd</td>
-                    <td>VECTOR6D</td>
-                    <td>Actual joint velocities</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_qd"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>actual_current</td>
-                    <td>VECTOR6D</td>
-                    <td>Actual joint currents</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_current"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>joint_control_output</td>
-                    <td>VECTOR6D</td>
-                    <td>Joint control currents</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="joint_control_output"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>actual_TCP_speed</td>
-                    <td>VECTOR6D</td>
-                    <td>Actual speed of the tool given in Cartesian coordinates</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_TCP_speed"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>actual_TCP_force</td>
-                    <td>VECTOR6D</td>
-                    <td>Generalized forces in the TCP</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_TCP_force"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>target_TCP_pose</td>
-                    <td>VECTOR6D</td>
-                    <td>Target Cartesian coordinates of the tool: (x,y,z,rx,ry,rz), where rx, ry and rz is a rotation vector representation of the tool orientation</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="target_TCP_pose"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>target_TCP_speed</td>
-                    <td>VECTOR6D</td>
-                    <td>Target speed of the tool given in Cartesian coordinates</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="target_TCP_speed"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>actual_digital_input_bits</td>
-                    <td>UINT64</td>
-                    <td>Current state of the digital inputs. <span>0-7: Standard, 8-15: Configurable, 16-17: Tool</span></td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_digital_input_bits
+    <body>
+        <h2>Choose what data you would like to see</h2>
+        <h3><strong>Robot controller outputs</strong></h3>
+        <button onclick="selectAll()">Select All</button>
+        <button onclick="clearAll()">Clear All</button>
+        <p></p>
+        <div class="table-wrap">
+            <table border="1" class="confluenceTable tablesorter tablesorter-default" id="table">
+                <tbody>
+                    <tr>
+                        <td>timestamp</td>
+                        <td>DOUBLE</td>
+                        <td>Time elapsed since the controller was started [s]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="timestamp"><span class="checkmark"></span></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>target_q</td>
+                        <td>VECTOR6D</td>
+                        <td>Target joint positions</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="target_q"><span class="checkmark"></span></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>target_qd</td>
+                        <td>VECTOR6D</td>
+                        <td>Target joint velocities</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="target_qd"><span class="checkmark"></span></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>target_qdd</td>
+                        <td>VECTOR6D</td>
+                        <td>Target joint accelerations</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="target_qdd"><span class="checkmark"></span></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>target_current</td>
+                        <td>VECTOR6D</td>
+                        <td>Target joint currents</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="target_current"><span class="checkmark"></span></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>target_moment</td>
+                        <td>VECTOR6D</td>
+                        <td>Target joint moments (torques)</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="target_moment"><span class="checkmark"></span></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>actual_q</td>
+                        <td>VECTOR6D</td>
+                        <td>Actual joint positions</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_q"><span class="checkmark"></span></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>actual_qd</td>
+                        <td>VECTOR6D</td>
+                        <td>Actual joint velocities</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_qd"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>actual_current</td>
+                        <td>VECTOR6D</td>
+                        <td>Actual joint currents</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_current"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>joint_control_output</td>
+                        <td>VECTOR6D</td>
+                        <td>Joint control currents</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="joint_control_output"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>actual_TCP_speed</td>
+                        <td>VECTOR6D</td>
+                        <td>Actual speed of the tool given in Cartesian coordinates</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_TCP_speed"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>actual_TCP_force</td>
+                        <td>VECTOR6D</td>
+                        <td>Generalized forces in the TCP</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_TCP_force"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>target_TCP_pose</td>
+                        <td>VECTOR6D</td>
+                        <td>Target Cartesian coordinates of the tool: (x,y,z,rx,ry,rz), where rx, ry and rz is a rotation vector representation of the tool orientation</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="target_TCP_pose"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>target_TCP_speed</td>
+                        <td>VECTOR6D</td>
+                        <td>Target speed of the tool given in Cartesian coordinates</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="target_TCP_speed"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>actual_digital_input_bits</td>
+                        <td>UINT64</td>
+                        <td>Current state of the digital inputs. <span>0-7: Standard, 8-15: Configurable, 16-17: Tool</span></td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_digital_input_bits
                             "><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>joint_temperatures</td>
-                    <td>VECTOR6D</td>
-                    <td>Temperature of each joint in degrees Celsius</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="joint_temperatures"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>actual_execution_time</td>
-                    <td>DOUBLE</td>
-                    <td>Controller real-time thread execution time</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_execution_time"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr style="vertical-align: middle;">
-                    <td colspan="1">robot_mode</td>
-                    <td colspan="1">INT32</td>
-                    <td colspan="1" style="vertical-align: middle;">Robot mode
-                        <br />Please see <a href="https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/remote-control-via-tcpip-16496/" title="Remote Control Via TCP/IP - 16496">Remote Control Via TCP/IP - 16496</a></td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="robot_mode"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr style="vertical-align: middle;">
-                    <td colspan="1">joint_mode</td>
-                    <td colspan="1">VECTOR6INT32</td>
-                    <td colspan="1" style="vertical-align: middle;">Joint control modes
-                        <br /><span>Please see </span><a href="https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/remote-control-via-tcpip-16496/" title="Remote Control Via TCP/IP - 16496">Remote Control Via TCP/IP - 16496</a></td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="joint_mode"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">safety_mode</td>
-                    <td colspan="1">INT32</td>
-                    <td colspan="1">Safety mode
-                        <br /><span>Please see </span><a href="https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/remote-control-via-tcpip-16496/" title="Remote Control Via TCP/IP - 16496">Remote Control Via TCP/IP - 16496</a></td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="safety_mode"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">actual_tool_accelerometer</td>
-                    <td colspan="1">VECTOR3D</td>
-                    <td colspan="1">Tool x, y and z accelerometer values</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_tool_accelerometer"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">speed_scaling</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Speed scaling of the trajectory limiter</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="speed_scaling"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">target_speed_fraction</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Target speed fraction</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="target_speed_fraction"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">actual_momentum</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Norm of Cartesian linear momentum</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_momentum"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">actual_main_voltage</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Safety Control Board: Main voltage</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_main_voltage"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">actual_robot_voltage</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Safety Control Board: Robot voltage (48V)</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_robot_voltage"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">actual_robot_current</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Safety Control Board: Robot current</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_robot_current"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">actual_joint_voltage</td>
-                    <td colspan="1">VECTOR6D</td>
-                    <td colspan="1">Actual joint voltages</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_joint_voltage"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">actual_digital_output_bits</td>
-                    <td colspan="1">UINT64</td>
-                    <td colspan="1"><span>Current state of the digital outputs. </span><span>0-7: Standard, 8-15: Configurable, 16-17: Tool</span></td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="actual_digital_output_bits"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">runtime_state</td>
-                    <td colspan="1">UINT32</td>
-                    <td colspan="1">Program state</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="runtime_state"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>elbow_position</td>
-                    <td>VECTOR3D</td>
-                    <td>Actual cartesian coordinates of the elbow (x,y,z)</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="elbow_position"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td>elbow_velocity</td>
-                    <td>VECTOR3D</td>
-                    <td>Actual cartesian velocity of the elbow</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="elbow_velocity"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">robot_status_bits</td>
-                    <td colspan="1">UINT32</td>
-                    <td colspan="1">Bits 0-3: Is power on | Is program running | Is teach button pressed | Is power button pressed</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="robot_status_bits"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">safety_status_bits</td>
-                    <td colspan="1">UINT32</td>
-                    <td colspan="1">Bits 0-10: Is normal mode | Is reduced mode | | Is protective stopped | Is recovery mode | Is safeguard stopped | Is system emergency stopped | Is robot emergency stopped | Is emergency stopped | Is violation | Is fault | Is stopped due to safety</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="safety_status_bits"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">analog_io_types</td>
-                    <td colspan="1">UINT32</td>
-                    <td colspan="1">
-                        <div>Bits 0-3: analog input 0 | analog input 1 | analog output 0 | analog output 1, {0=current[A], 1=voltage[V]}</div>
-                    </td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="analog_io_types"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">standard_analog_input0</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Standard analog input 0 [A or V]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="standard_analog_input0"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">standard_analog_input1</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Standard analog input 1 [A or V]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="standard_analog_input1"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">standard_analog_output0</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Standard analog output 0 [A or V]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="standard_analog_output0"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">standard_analog_output1</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Standard analog output 1 [A or V]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="standard_analog_output1"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">io_current</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">I/O current [A]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="io_current"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">tool_mode</td>
-                    <td colspan="1">UINT32</td>
-                    <td colspan="1">Tool mode
-                        <br /><span>Please see </span><a href="https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/remote-control-via-tcpip-16496/" title="Remote Control Via TCP/IP - 16496">Remote Control Via TCP/IP - 16496</a></td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="tool_mode"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">tool_analog_input_types</td>
-                    <td colspan="1">UINT32</td>
-                    <td colspan="1">
-                        <p>Output domain {0=current[A], 1=voltage[V]}</p>
-                        <p>Bits 0-1: tool_analog_input_0 | tool_analog_input_1</p>
-                    </td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="tool_analog_input_types"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">tool_analog_input0</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Tool analog input 0 [A or V]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="tool_analog_input0"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">tool_analog_input1</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Tool analog input 1 [A or V]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="tool_analog_input1"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">tool_output_voltage</td>
-                    <td colspan="1">INT32</td>
-                    <td colspan="1">Tool output voltage [V]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="tool_output_voltage"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">tool_output_current</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Tool current [A]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="tool_output_current"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">tool_temperature</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">Tool temperature in degrees Celsius</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="tool_temperature"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">tcp_force_scalar</td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">TCP force scalar [N]</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="tcp_force_scalar"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">output_bit_registers0_to_31</td>
-                    <td colspan="1">UINT32</td>
-                    <td colspan="1">General purpose bits</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="output_bit_registers0_to_31"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">output_bit_registers32_to_63</td>
-                    <td colspan="1">UINT32</td>
-                    <td colspan="1">General purpose bits</td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="output_bit_registers32_to_63"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">output_int_register_<em>X</em></td>
-                    <td colspan="1">INT32</td>
-                    <td colspan="1">
-                        <p>24 general purpose integer registers</p>
-                        <p>X: [0..23]</p>
-                    </td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="output_int_register_X"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="1">output_double_register_<em>X</em></td>
-                    <td colspan="1">DOUBLE</td>
-                    <td colspan="1">
-                        <p>24 general purpose double registers</p>
-                        <p>X: [0..23]</p>
-                    </td>
-                    <td>
-                        <label class="container">
-                            <input type="checkbox" class="box" id="output_double_register_X"><span class="checkmark"></span>
-                        </label>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <p>
-        <button onclick="submit()">Submit</button>
-</body>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>joint_temperatures</td>
+                        <td>VECTOR6D</td>
+                        <td>Temperature of each joint in degrees Celsius</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="joint_temperatures"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>actual_execution_time</td>
+                        <td>DOUBLE</td>
+                        <td>Controller real-time thread execution time</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_execution_time"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr style="vertical-align: middle;">
+                        <td colspan="1">robot_mode</td>
+                        <td colspan="1">INT32</td>
+                        <td colspan="1" style="vertical-align: middle;">Robot mode
+                            <br />Please see <a href="https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/remote-control-via-tcpip-16496/" title="Remote Control Via TCP/IP - 16496">Remote Control Via TCP/IP - 16496</a></td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="robot_mode"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr style="vertical-align: middle;">
+                        <td colspan="1">joint_mode</td>
+                        <td colspan="1">VECTOR6INT32</td>
+                        <td colspan="1" style="vertical-align: middle;">Joint control modes
+                            <br /><span>Please see </span><a href="https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/remote-control-via-tcpip-16496/" title="Remote Control Via TCP/IP - 16496">Remote Control Via TCP/IP - 16496</a></td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="joint_mode"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">safety_mode</td>
+                        <td colspan="1">INT32</td>
+                        <td colspan="1">Safety mode
+                            <br /><span>Please see </span><a href="https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/remote-control-via-tcpip-16496/" title="Remote Control Via TCP/IP - 16496">Remote Control Via TCP/IP - 16496</a></td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="safety_mode"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">actual_tool_accelerometer</td>
+                        <td colspan="1">VECTOR3D</td>
+                        <td colspan="1">Tool x, y and z accelerometer values</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_tool_accelerometer"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">speed_scaling</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Speed scaling of the trajectory limiter</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="speed_scaling"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">target_speed_fraction</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Target speed fraction</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="target_speed_fraction"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">actual_momentum</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Norm of Cartesian linear momentum</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_momentum"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">actual_main_voltage</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Safety Control Board: Main voltage</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_main_voltage"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">actual_robot_voltage</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Safety Control Board: Robot voltage (48V)</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_robot_voltage"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">actual_robot_current</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Safety Control Board: Robot current</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_robot_current"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">actual_joint_voltage</td>
+                        <td colspan="1">VECTOR6D</td>
+                        <td colspan="1">Actual joint voltages</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_joint_voltage"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">actual_digital_output_bits</td>
+                        <td colspan="1">UINT64</td>
+                        <td colspan="1"><span>Current state of the digital outputs. </span><span>0-7: Standard, 8-15: Configurable, 16-17: Tool</span></td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="actual_digital_output_bits"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">runtime_state</td>
+                        <td colspan="1">UINT32</td>
+                        <td colspan="1">Program state</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="runtime_state"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>elbow_position</td>
+                        <td>VECTOR3D</td>
+                        <td>Actual cartesian coordinates of the elbow (x,y,z)</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="elbow_position"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>elbow_velocity</td>
+                        <td>VECTOR3D</td>
+                        <td>Actual cartesian velocity of the elbow</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="elbow_velocity"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">robot_status_bits</td>
+                        <td colspan="1">UINT32</td>
+                        <td colspan="1">Bits 0-3: Is power on | Is program running | Is teach button pressed | Is power button pressed</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="robot_status_bits"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">safety_status_bits</td>
+                        <td colspan="1">UINT32</td>
+                        <td colspan="1">Bits 0-10: Is normal mode | Is reduced mode | | Is protective stopped | Is recovery mode | Is safeguard stopped | Is system emergency stopped | Is robot emergency stopped | Is emergency stopped | Is violation | Is fault | Is stopped due to safety</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="safety_status_bits"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">analog_io_types</td>
+                        <td colspan="1">UINT32</td>
+                        <td colspan="1">
+                            <div>Bits 0-3: analog input 0 | analog input 1 | analog output 0 | analog output 1, {0=current[A], 1=voltage[V]}</div>
+                        </td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="analog_io_types"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">standard_analog_input0</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Standard analog input 0 [A or V]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="standard_analog_input0"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">standard_analog_input1</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Standard analog input 1 [A or V]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="standard_analog_input1"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">standard_analog_output0</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Standard analog output 0 [A or V]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="standard_analog_output0"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">standard_analog_output1</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Standard analog output 1 [A or V]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="standard_analog_output1"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">io_current</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">I/O current [A]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="io_current"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">tool_mode</td>
+                        <td colspan="1">UINT32</td>
+                        <td colspan="1">Tool mode
+                            <br /><span>Please see </span><a href="https://www.universal-robots.com/how-tos-and-faqs/how-to/ur-how-tos/remote-control-via-tcpip-16496/" title="Remote Control Via TCP/IP - 16496">Remote Control Via TCP/IP - 16496</a></td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="tool_mode"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">tool_analog_input_types</td>
+                        <td colspan="1">UINT32</td>
+                        <td colspan="1">
+                            <p>Output domain {0=current[A], 1=voltage[V]}</p>
+                            <p>Bits 0-1: tool_analog_input_0 | tool_analog_input_1</p>
+                        </td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="tool_analog_input_types"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">tool_analog_input0</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Tool analog input 0 [A or V]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="tool_analog_input0"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">tool_analog_input1</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Tool analog input 1 [A or V]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="tool_analog_input1"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">tool_output_voltage</td>
+                        <td colspan="1">INT32</td>
+                        <td colspan="1">Tool output voltage [V]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="tool_output_voltage"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">tool_output_current</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Tool current [A]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="tool_output_current"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">tool_temperature</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">Tool temperature in degrees Celsius</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="tool_temperature"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">tcp_force_scalar</td>
+                        <td colspan="1">DOUBLE</td>
+                        <td colspan="1">TCP force scalar [N]</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="tcp_force_scalar"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">output_bit_registers0_to_31</td>
+                        <td colspan="1">UINT32</td>
+                        <td colspan="1">General purpose bits</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="output_bit_registers0_to_31"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="1">output_bit_registers32_to_63</td>
+                        <td colspan="1">UINT32</td>
+                        <td colspan="1">General purpose bits</td>
+                        <td>
+                            <label class="container">
+                                <input type="checkbox" class="box" id="output_bit_registers32_to_63"><span class="checkmark"></span>
+                            </label>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p>
+            <button onclick="submit()">Submit</button>
+    </body>
 
 </html>

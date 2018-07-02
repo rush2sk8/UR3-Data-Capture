@@ -34,7 +34,7 @@ function initSockets() {
             document.getElementById('rx').innerHTML = "RX: " + readings[3]
             document.getElementById('ry').innerHTML = "RY: " + readings[4]
             document.getElementById('rz').innerHTML = "RZ: " + readings[5]
-            
+
             if (readings.length > 6) {
 
                 const extra = document.getElementById('extra')
@@ -42,29 +42,39 @@ function initSockets() {
                 var x = document.getElementsByClassName('extra_data');
 
                 for (var i = x.length - 1; i >= 0; i--) {
-                   x[i].innerHTML = x[i].id + ": " + readings[i+6].replace(/\+/g, "");
+                    x[i].innerHTML = x[i].id + ": " + readings[i + 6].replace(/\+/g, "");
                 }
             }
         }
     });
 
+    //when someone emits a message to update the additional data section
     socket.on('add_labels', (d) => {
-      
-        if (d.data != null && d.data != "") {
-            document.getElementById('extra').innerHTML = "";
 
+        //make sure its actual useable data
+        if (d.data != null && d.data != "") {
+
+            //clear the div
+            const box = document.getElementById('extra')
+            while (box.lastChild) {
+                box.removeChild(box.lastChild);
+            }
+
+            //construct the new html for the page
             const data = d.data.split(',')
             var htmlData = "";
             for (var i = 0; i < data.length; i++) {
                 const split = data[i].split(':')
                 htmlData += "<h3 id=\"" + split[0] + "\" class=\"extra_data\">" + split[0] + ": <h3>" + "\n";
             }
-    
+
+            //set the html
             document.getElementById('extra').innerHTML = htmlData;
         }
 
     });
 
+    //refreshes the page
     socket.on('refresh', (d) => {
         console.log('reload')
         location.reload(true)
