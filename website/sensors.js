@@ -34,6 +34,7 @@ function initSockets() {
             document.getElementById('rx').innerHTML = "RX: " + readings[3]
             document.getElementById('ry').innerHTML = "RY: " + readings[4]
             document.getElementById('rz').innerHTML = "RZ: " + readings[5]
+            
             if (readings.length > 6) {
 
                 const extra = document.getElementById('extra')
