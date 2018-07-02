@@ -2,6 +2,5 @@
 <rtde_config>
  <recipe key="out">
 <field name="actual_TCP_pose" type="VECTOR6D"/>
-<field name="timestamp" type="DOUBLE"/>
 </recipe>
 </rtde_config>

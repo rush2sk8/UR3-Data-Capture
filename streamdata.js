@@ -81,7 +81,7 @@ function runPythonProcess() {
 
                 for (var i = 6; i < split.length; i++) {
 
-                    const extra = ((extraRobotData != null) && extraRobotData.length >= 1)? extraRobotData[x].split(":")[1] : ""
+                    const extra = ((extraRobotData != null) && extraRobotData.length >= 1 && x < extraRobotData.length) ? extraRobotData[x].split(":")[1] : ""
 
                     if (extra === "VECTOR6D" || extra === "VECTOR6INT32") {
 
@@ -127,17 +127,6 @@ function runPythonProcess() {
 }
 
 runPythonProcess();
-
-//makes sure that the current data is different than the previous data
-function checkRobotData(data1, data2) {
-    const data = data1.split(", ");
-    const other2 = data2.split(", ")
-
-    for (var i = data1.length; i >= 0; i--)
-        if (parseFloat(data[i]).toFixed() !== parseFloat(other2[i]).toFixed()) return false
-
-    return true
-}
 
 //********************************************GET AND COMPUTE DATA CODE*******************************************///
 //run a GET to the XML status
@@ -276,7 +265,10 @@ router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(','
 router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(',').slice(3, 6) }) })
 
 //non routed will just send you to the website localhost:3000/ 
-app.get('/', (req, res) => { res.sendFile(__dirname + '/website/index.html') })
+app.get('/', (req, res) => { 
+	res.sendFile(__dirname + '/website/index.html');  	
+	setTimeout(()=>{	io.sockets.emit('add_labels', {data: extraRobotData.toString()}); },500)
+})
 
 app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/website/3d_plotting/main.html') })
 
@@ -308,6 +300,10 @@ io.sockets.on('connection', (socket) => {
         extraRobotData = data;
 
         console.log(extraRobotData + " length: " + extraRobotData.length)
+
+        setTimeout(()=>{
+        	io.sockets.emit('add_labels', {data: extraRobotData.toString()});
+        },1000)
     });
 });
 

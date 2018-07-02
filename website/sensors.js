@@ -7,7 +7,7 @@ function init() {
     initHost('ty');
     initHost('tz');
     initHost('all');
-    initText();
+    initSockets();
     console.log('init')
 }
 
@@ -20,13 +20,14 @@ var seriesOptions = [
     { strokeStyle: 'rgb(0, 255,255)', fillStyle: 'rgba(0, 255, 255, 0.3)', lineWidth: 3 }
 ];
 
-function initText() {
+function initSockets() {
     var socket = io.connect('http://localhost:3000');
+    var label_nodes = []
 
     socket.on('robot-update', (d) => {
         if (d != null) {
             var readings = d.data.split(',');
-            console.log("r:"+readings)
+
             document.getElementById('x').innerHTML = "X: " + readings[0]
             document.getElementById('y').innerHTML = "Y: " + readings[1]
             document.getElementById('z').innerHTML = "Z: " + readings[2]
@@ -35,28 +36,38 @@ function initText() {
             document.getElementById('rz').innerHTML = "RZ: " + readings[5]
             if (readings.length > 6) {
 
-                var string = "";
+                const extra = document.getElementById('extra')
 
-                for (var i = 6; i < readings.length; i++) {
-                    string += readings[i] + " ";
+                var x = document.getElementsByClassName('extra_data');
+
+                for (var i = x.length - 1; i >= 0; i--) {
+                   x[i].innerHTML = x[i].id + ": " + readings[i+6].replace(/\+/g, "");
                 }
-                console.log(string)
-                document.getElementById('extra').innerHTML = "<h3>" + string + "</h3>";
             }
         }
     });
 
-    socket.on('add_data', (d) => {
-        if (d != null) {
-            console.log(d.data)
+    socket.on('add_labels', (d) => {
+      
+        if (d.data != null && d.data != "") {
+            document.getElementById('extra').innerHTML = "";
 
+            const data = d.data.split(',')
+            var htmlData = "";
+            for (var i = 0; i < data.length; i++) {
+                const split = data[i].split(':')
+                htmlData += "<h3 id=\"" + split[0] + "\" class=\"extra_data\">" + split[0] + ": <h3>" + "\n";
+            }
+    
+            document.getElementById('extra').innerHTML = htmlData;
         }
-    })
+
+    });
 
     socket.on('refresh', (d) => {
         console.log('reload')
         location.reload(true)
-    })
+    });
 }
 
 function initHost(hostId) {
