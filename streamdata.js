@@ -52,6 +52,7 @@ if (process.argv[2] === '-h' || process.argv[2] === '-help') {
 
 //write the information to the console every X ms
 setInterval(() => {
+	console.log('\033c')
     console.log("CRD: " + currRobotData)
     console.log("CD: " + currData)
 }, 250);

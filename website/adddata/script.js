@@ -4,12 +4,13 @@ function submit() {
 
     var dataa = [""]
     var toSend = [];
-    const table = document.getElementById('table')
 
+    //get all the checkboxes
     var x = document.getElementsByClassName('box');
     for (var i = 0; i < x.length; i++) {
 
         if (x[i].checked) {
+            //generate
             const string = "<field name=\"" + outputs[i] + "\" type=\"" + table.rows[i].cells[1].innerHTML + "\"/>";
             toSend.push(outputs[i] + ":" + table.rows[i].cells[1].innerHTML)
             dataa.push(string)
@@ -34,9 +35,8 @@ function clearAll() {
     boxes(false)
 }
 
+//check or uncheck boxes
 function boxes(flag) {
-    const table = document.getElementById('table')
-
     var x = document.getElementsByClassName('box');
 
     for (var i = x.length - 1; i >= 0; i--) {
@@ -44,9 +44,11 @@ function boxes(flag) {
     }
 }
 
+//capture a refresh command
 function init() {
     var socket = io.connect('http://localhost:3000');
 
+    //refresh the page from the server instead of webcache
     socket.on('refresh', (d) => {
         console.log('reload')
         location.reload(true)
