@@ -25,7 +25,14 @@ var timeRecieved = 0;
 var prevRobotData = "NONE"
 var extraRobotData = []
 var pyshell;
-
+//***********************************************READ EXTRA DATA CODE*******************************************///
+if (fs.existsSync("./robot.extra")) {
+    var extra = fs.readFileSync("./robot.extra", "utf8", (err) => {}).split(',');
+    console.log(extra);
+    for (var i = extra.length - 1; i >= 0; i--) {
+        extraRobotData.push(extra[i])
+    }
+}
 //*************************************************CMD LINE ARGS CODE*******************************************///
 if (process.argv[2] === '-h' || process.argv[2] === '-help') {
     console.log("usage: node streamdata.js [-h] [-log t/f]");
@@ -53,7 +60,7 @@ if (process.argv[2] === '-h' || process.argv[2] === '-help') {
 
 //write the information to the console every X ms
 setInterval(() => {
-    //clear command
+    // clear command
     console.log('\033c')
     console.log("CRD: " + currRobotData)
     console.log("CD: " + currData)
@@ -117,6 +124,10 @@ function runPythonProcess() {
             if (prevRobotData !== "NONE") {
 
                 io.sockets.emit('robot-update', { data: toSend })
+
+                if (checkRobotData(currRobotData, prevRobotData) === false) {
+                    io.sockets.emit('plot-update', { data: currRobotData })
+                }
             }
 
             prevRobotData = currRobotData
@@ -133,6 +144,16 @@ function runPythonProcess() {
             console.log('The exit signal was: ' + signal);
         }
     });
+}
+
+function checkRobotData(data1, data2) {
+    const data = data1.split(", ");
+    const other2 = data2.split(", ")
+
+    for (var i = data.length - 1; i >= 0; i--) {
+        if (parseFloat(data[i]).toFixed(1) !== parseFloat(other2[i]).toFixed(1)) return false
+    }
+    return true
 }
 
 //run the code once
@@ -238,6 +259,11 @@ process.on("SIGINT", function() {
         forcetorquestream.end();
         robotstream.end()
     }
+
+    if (extraRobotData.length >= 1) {
+        fs.writeFileSync("robot.extra", extraRobotData)
+    }
+
     process.exit();
 });
 

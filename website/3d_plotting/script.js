@@ -20,7 +20,7 @@ Plotly.plot('graph', [{
     }
 }]);
 
-socket.on('robot-update', (d) => {
+socket.on('plot-update', (d) => {
     if (d != null) {
         const readings = d.data.split(',');
         x.push(readings[0]);

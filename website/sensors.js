@@ -81,7 +81,7 @@ function initSockets() {
     });
 
     //get labels 
-    io.sockets.emit('request_labels', {data:'add_labels'})
+    io.sockets.emit('request_labels', { data: 'add_labels' })
 }
 
 function initHost(hostId) {

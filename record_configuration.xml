@@ -2,7 +2,5 @@
 <rtde_config>
  <recipe key="out">
 <field name="actual_TCP_pose" type="VECTOR6D"/>
-<field name="joint_temperatures" type="VECTOR6D"/>
-<field name="actual_execution_time" type="DOUBLE"/>
 </recipe>
 </rtde_config>
