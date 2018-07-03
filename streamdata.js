@@ -30,7 +30,7 @@ var pyshell;
 if (process.argv[2] === '-h' || process.argv[2] === '-help') {
     console.log("usage: node streamdata.js [-h] [-log t/f]");
     process.exit();
-    
+
 } else if (process.argv[2] === '-log') {
     const flag = process.argv[3];
 
@@ -53,8 +53,8 @@ if (process.argv[2] === '-h' || process.argv[2] === '-help') {
 
 //write the information to the console every X ms
 setInterval(() => {
-	//clear command
-	console.log('\033c')
+    //clear command
+    console.log('\033c')
     console.log("CRD: " + currRobotData)
     console.log("CD: " + currData)
 }, 250);
@@ -276,8 +276,11 @@ router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(
 
 //non routed will just send you to the website localhost:3000/ 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/website/index.html');
-    setTimeout(() => { io.sockets.emit('add_labels', { data: extraRobotData.toString() }); }, 500)
+    res.sendFile(__dirname + '/website/index.html', (err) => {
+        //on finish send the extra robot data
+        setTimeout(() => { io.sockets.emit('add_labels', { data: extraRobotData.toString() }); }, 100)
+    });
+
 })
 
 app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/website/3d_plotting/main.html') })
@@ -318,6 +321,11 @@ io.sockets.on('connection', (socket) => {
             io.sockets.emit('add_labels', { data: extraRobotData.toString() });
         }, 1000)
     });
+
+    socket.on('request_labels', (d) => {
+        console.log('request')
+        io.sockets.emit('add_labels', { data: extraRobotData.toString() });
+    })
 });
 
 

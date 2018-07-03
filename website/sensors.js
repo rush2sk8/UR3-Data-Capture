@@ -79,6 +79,9 @@ function initSockets() {
         console.log('reload')
         location.reload(true)
     });
+
+    //get labels 
+    io.sockets.emit('request_labels', {data:'add_labels'})
 }
 
 function initHost(hostId) {
