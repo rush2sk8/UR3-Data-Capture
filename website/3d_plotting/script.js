@@ -5,7 +5,7 @@ var y = [];
 var z = [];
 var c = [];
 var numSamples = 0;
-
+console.log(document)
 var graph = document.getElementById("graph")
 console.log(graph)
 Plotly.plot(graph, [{

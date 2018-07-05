@@ -38,7 +38,7 @@ function initSockets() {
 
             if (readings.length > 6) {
 
-                            var x = document.getElementsByClassName('extra_data');
+                var x = document.getElementsByClassName('extra_data');
 
                 for (var i = x.length - 1; i >= 0; i--) {
                     x[i].innerHTML = x[i].id + ": " + readings[i + 6].replace(/\+/g, "");
@@ -150,6 +150,7 @@ function initHost(hostId) {
                 sensor.append(d, readings[3])
             } else if (hostId === 'ty') {
                 sensor.append(d, readings[4])
+
             } else if (hostId === 'tz') {
                 sensor.append(d, readings[5])
             } else if (hostId === 'all') {
@@ -166,3 +167,4 @@ function initHost(hostId) {
 
     timeline.streamTo(document.getElementById(hostId), 100);
 }
+
