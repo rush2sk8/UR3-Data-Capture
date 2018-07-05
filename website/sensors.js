@@ -15,7 +15,7 @@ var seriesOptions = [
     { strokeStyle: 'rgb(255, 0,  0)', fillStyle: 'rgba(255, 0, 0,  0.3)', lineWidth: 3 },
     { strokeStyle: 'rgb(0, 255,  0)', fillStyle: 'rgba(0, 255, 0,  0.3)', lineWidth: 3 },
     { strokeStyle: 'rgb(0, 0,  255)', fillStyle: 'rgba(0, 0, 255,  0.3)', lineWidth: 3 },
-    { strokeStyle: 'rgb(255, 255,0)', fillStyle: 'rgba(255, 255, 0, 0.3)', lineWidth: 3 },
+    { strokeStyle: 'rgb(255, 51,153)', fillStyle: 'rgba(255, 51,153, 0.3)', lineWidth: 3 },
     { strokeStyle: 'rgb(255, 0,255)', fillStyle: 'rgba(255, 0, 255, 0.3)', lineWidth: 3 },
     { strokeStyle: 'rgb(0, 255,255)', fillStyle: 'rgba(0, 255, 255, 0.3)', lineWidth: 3 }
 ];
@@ -26,6 +26,7 @@ function initSockets() {
 
     socket.on('robot-update', (d) => {
         if (d != null) {
+
             var readings = d.data.split(',');
 
             document.getElementById('x').innerHTML = "X: " + readings[0]
