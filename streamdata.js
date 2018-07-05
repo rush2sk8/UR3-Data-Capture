@@ -302,14 +302,14 @@ router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(
 
 //non routed will just send you to the website localhost:3000/ 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/website/examples/dashboard.html', (err) => {
+    res.sendFile(__dirname + '/website/dashboard.html', (err) => {
         //on finish send the extra robot data
         setTimeout(() => { io.sockets.emit('add_labels', { data: extraRobotData.toString() }); }, 100)
     });
 
 })
 
-app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/website/3d_plotting/main.html') })
+app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/website/3d_plotting/3dplot.html') })
 
 app.get('/adddata', (req, res) => { res.sendFile(__dirname + '/website/adddata/main.html') })
 
@@ -322,13 +322,13 @@ app.use(express.static(__dirname + '/website/3d_plotting/'));
 //add data 
 app.use(express.static(__dirname + '/website/adddata/'));
 
-app.use(express.static(__dirname + '/website/examples/assets/css'));
-app.use(express.static(__dirname + '/website/examples/assets/img'));
-app.use(express.static(__dirname + '/website/examples/assets/js'));
-app.use(express.static(__dirname + '/website/examples/assets/scss'));
-app.use(express.static(__dirname + '/website/examples/assets/js/core'));
-app.use(express.static(__dirname + '/website/examples/assets/js/plugins'));
-app.use(express.static(__dirname + '/website/examples/'));
+app.use(express.static(__dirname + '/website/assets/css'));
+app.use(express.static(__dirname + '/website/assets/img'));
+app.use(express.static(__dirname + '/website/assets/js'));
+app.use(express.static(__dirname + '/website/assets/scss'));
+app.use(express.static(__dirname + '/website/assets/js/core'));
+app.use(express.static(__dirname + '/website/assets/js/plugins'));
+app.use(express.static(__dirname + '/website/'));
 
 //capture data back from the website
 io.sockets.on('connection', (socket) => {
