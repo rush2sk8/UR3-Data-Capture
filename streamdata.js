@@ -309,7 +309,7 @@ app.get('/', (req, res) => {
 
 })
 
-app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/website/3d_plotting/3dplot.html') })
+app.get('/robotviz', (req, res) => { res.sendFile(__dirname + '/website/3d_plotting/main.html') })
 
 app.get('/adddata', (req, res) => { res.sendFile(__dirname + '/website/adddata/main.html') })
 

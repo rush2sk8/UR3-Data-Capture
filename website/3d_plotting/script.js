@@ -6,7 +6,9 @@ var z = [];
 var c = [];
 var numSamples = 0;
 
-Plotly.plot('graph', [{
+var graph = document.getElementById("graph")
+console.log(graph)
+Plotly.plot(graph, [{
     type: 'scatter3d',
     mode: 'lines',
     x: x,
@@ -29,7 +31,7 @@ socket.on('plot-update', (d) => {
         c.push(Math.floor(Math.random() * 256))
         numSamples += 1;
 
-        Plotly.react('graph', [{
+        Plotly.react(graph, [{
             type: 'scatter3d',
             mode: 'lines',
             autosize: false,

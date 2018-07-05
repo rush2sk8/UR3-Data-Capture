@@ -38,9 +38,7 @@ function initSockets() {
 
             if (readings.length > 6) {
 
-                const extra = document.getElementById('extra')
-
-                var x = document.getElementsByClassName('extra_data');
+                            var x = document.getElementsByClassName('extra_data');
 
                 for (var i = x.length - 1; i >= 0; i--) {
                     x[i].innerHTML = x[i].id + ": " + readings[i + 6].replace(/\+/g, "");
@@ -81,6 +79,8 @@ function initSockets() {
         location.reload(true)
     });
 
+    //get labels 
+    socket.emit('request_labels', { data: 'add_labels' })
 }
 
 function initHost(hostId) {
