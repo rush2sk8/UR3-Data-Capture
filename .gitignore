@@ -16,6 +16,8 @@ lib-cov
 
 robot.extra 
 
+*.extra
+
 # Coverage directory used by tools like istanbul
 coverage
 
