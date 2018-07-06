@@ -1,3 +1,5 @@
+var socket = io.connect('http://localhost:3000');
+
 //create real time graphss
 function init() {
     initHost('fx');
@@ -11,6 +13,7 @@ function init() {
     console.log('init')
 }
 
+//list of colors for each gra[h]
 var seriesOptions = [
     { strokeStyle: 'rgb(255, 0,  0)', fillStyle: 'rgba(255, 0, 0,  0.3)', lineWidth: 3 },
     { strokeStyle: 'rgb(0, 255,  0)', fillStyle: 'rgba(0, 255, 0,  0.3)', lineWidth: 3 },
@@ -20,10 +23,12 @@ var seriesOptions = [
     { strokeStyle: 'rgb(0, 255,255)', fillStyle: 'rgba(0, 255, 255, 0.3)', lineWidth: 3 }
 ];
 
+//initialize the socket connection that will get the robot xyz and additional data values
 function initSockets() {
-    var socket = io.connect('http://localhost:3000');
+    
     var label_nodes = []
 
+    //whenever someone emits a robot-update message we try to parse it
     socket.on('robot-update', (d) => {
         if (d != null) {
 
@@ -36,6 +41,7 @@ function initSockets() {
             document.getElementById('ry').innerHTML = "RY: " + readings[4]
             document.getElementById('rz').innerHTML = "RZ: " + readings[5]
 
+            //if there is extra robot data then extract it and paste it into the document
             if (readings.length > 6) {
 
                 var x = document.getElementsByClassName('extra_data');
@@ -94,7 +100,7 @@ function initHost(hostId) {
     var tx = new TimeSeries();
     var ty = new TimeSeries();
     var tz = new TimeSeries();
-    var socket = io.connect('http://localhost:3000');
+
 
     // Build the timeline
     var timeline = new SmoothieChart({ responsive: true, tooltip: true, sharpLines: true });

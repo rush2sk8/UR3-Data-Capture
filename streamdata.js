@@ -267,6 +267,7 @@ process.on("SIGINT", function() {
     process.exit();
 });
 
+//refresh the webpage
 setTimeout(() => {
     io.sockets.emit('refresh', { data: "none" })
     console.log("refresh")
@@ -321,11 +322,9 @@ app.use(express.static(__dirname + '/website/3d_plotting/'));
 
 //add data 
 app.use(express.static(__dirname + '/website/adddata/'));
-
 app.use(express.static(__dirname + '/website/assets/css'));
 app.use(express.static(__dirname + '/website/assets/img'));
 app.use(express.static(__dirname + '/website/assets/js'));
-app.use(express.static(__dirname + '/website/assets/scss'));
 app.use(express.static(__dirname + '/website/assets/js/core'));
 app.use(express.static(__dirname + '/website/assets/js/plugins'));
 app.use(express.static(__dirname + '/website/'));
