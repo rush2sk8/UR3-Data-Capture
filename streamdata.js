@@ -61,7 +61,7 @@ if (process.argv[2] === '-h' || process.argv[2] === '-help') {
 //write the information to the console every X ms
 setInterval(() => {
     // clear command
-    console.log('\033c')
+    // console.log('\033c')
     console.log("CRD: " + currRobotData)
     console.log("CD: " + currData)
 }, 250);
@@ -320,7 +320,7 @@ app.use(express.static(__dirname + '/'));
 //used for other files that might be needed
 app.use(express.static(__dirname + '/website/3d_plotting/'));
 
-//add data 
+//#include otherdata 
 app.use(express.static(__dirname + '/website/adddata/'));
 app.use(express.static(__dirname + '/website/assets/css'));
 app.use(express.static(__dirname + '/website/assets/img'));
@@ -332,22 +332,22 @@ app.use(express.static(__dirname + '/website/'));
 //capture data back from the website
 io.sockets.on('connection', (socket) => {
 
-    //the add data page will write a new config
-    socket.on('add', (a) => {
-        writeNewConfiguration(a.data)
-    });
-
-    //kill the python process and replace it with a new one which loads the new configuration
+    //write a new config kill the python process and replace it with a new one which loads the new configuration
     socket.on('add_data', (d) => {
+
         var data = d.data.split(',');
 
+        //write the new record config BLOCKING
+        writeNewConfiguration(data)
+
+        //kill the python process
         pyshell.childProcess.kill('SIGINT')
+
+        //restart the pyshell this time loading the enw configuration
         runPythonProcess();
 
         extraRobotData = []
         extraRobotData = data;
-
-        console.log(extraRobotData + " length: " + extraRobotData.length)
 
         //emit this to the main page so that you can keep the additional data persistent
         setTimeout(() => {
@@ -355,20 +355,23 @@ io.sockets.on('connection', (socket) => {
         }, 1000)
     });
 
+    //if they request the additional dat labels then send them what we have
     socket.on('request_labels', (d) => {
         console.log('request')
         io.sockets.emit('add_labels', { data: extraRobotData.toString() });
     })
 });
 
-
+//writes the new record_configuration.xml and restart the process
 function writeNewConfiguration(data) {
-    var string = "<?xml version=\"1.0\"?>" + "\n" + "<rtde_config>" + "\n" + " <recipe key=\"out\">" + "\n" + "<field name=\"actual_TCP_pose\" type=\"VECTOR6D\"/>"
-    const entries = data.split(',');
+    var string = "<?xml version=\"1.0\"?>" + "\n" + "<rtde_config>" + "\n" + " <recipe key=\"out\">" + "\n" + "<field name=\"actual_TCP_pose\" type=\"VECTOR6D\"/>" + "\n"
 
-    for (var i = 0; i < entries.length; i++) {
-        string += entries[i] + "\n"
-    }
+    if (data != null && data.length >= 1)
+        for (var i = 0; i < data.length; i++) {
+            const split = data[i].split(":")
+            if (split.length == 2)
+                string += "<field name=\"" + split[0] + "\" type=\"" + split[1] + "\"/>" + "\n";
+        }
 
     string += "</recipe>" + "\n" + "</rtde_config>"
     fs.writeFileSync("record_configuration.xml", string)

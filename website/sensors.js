@@ -25,7 +25,7 @@ var seriesOptions = [
 
 //initialize the socket connection that will get the robot xyz and additional data values
 function initSockets() {
-    
+
     var label_nodes = []
 
     //whenever someone emits a robot-update message we try to parse it
@@ -140,6 +140,7 @@ function initHost(hostId) {
         timeline.addTimeSeries(tz, seriesOptions[5]);
     }
 
+    //when we get new dat update the graphs
     socket.on('sensor-update', (msg) => {
         if (msg != null) {
             const readings = msg.data.split(',');
@@ -173,4 +174,3 @@ function initHost(hostId) {
 
     timeline.streamTo(document.getElementById(hostId), 100);
 }
-

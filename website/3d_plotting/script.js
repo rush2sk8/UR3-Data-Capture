@@ -1,13 +1,18 @@
 var socket = io.connect('http://localhost:3000');
 
+//where we hold the xyz data
 var x = [];
 var y = [];
 var z = [];
 var c = [];
+
+//keep a track of the number of samples so that we can restart and cleanup when we reach a threshhold to minimize render lag
 var numSamples = 0;
-console.log(document)
+
 var graph = document.getElementById("graph")
 console.log(graph)
+
+//create the initial graph
 Plotly.plot(graph, [{
     type: 'scatter3d',
     mode: 'lines',
@@ -22,6 +27,7 @@ Plotly.plot(graph, [{
     }
 }]);
 
+//when we get plot-update data then 
 socket.on('plot-update', (d) => {
     if (d != null) {
         const readings = d.data.split(',');
@@ -31,6 +37,7 @@ socket.on('plot-update', (d) => {
         c.push(Math.floor(Math.random() * 256))
         numSamples += 1;
 
+        //update graph with new data
         Plotly.react(graph, [{
             type: 'scatter3d',
             mode: 'lines',
@@ -48,6 +55,8 @@ socket.on('plot-update', (d) => {
             }
         }]);
 
+        //if we reach 500 samples then restart the graph so we dont have such large datasets trying to be rendered
+        //btw we shouldnt be writing that much data anyway because the robot poses's will be repeated
         if (numSamples >= 500) {
             Plotly.purge('graph')
             Plotly.plot('graph', [{
@@ -79,7 +88,7 @@ socket.on('plot-update', (d) => {
 
             numSamples = 0;
         }
-        console.log(numSamples)
+        
     }
 
 });
