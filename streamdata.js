@@ -54,7 +54,7 @@ if (process.argv[2] === '-h' || process.argv[2] === '-help') {
         forcetorquestream.write("Fx (N),Fy (N),Fz (N),Tx (Nm),Ty (Nm),Tz (Nm)\n");
 
         //if logging is enabled write this header
-        robotstream.write("X, Y, Z, RX, RY, RZ\n");
+        robotstream.write("X, Y, Z, RX, RY, RZ," + extraRobotData.toString() + "\n");
     }
 }
 
@@ -348,6 +348,7 @@ io.sockets.on('connection', (socket) => {
 
         extraRobotData = []
         extraRobotData = data;
+        robotstream.write("X, Y, Z, RX, RY, RZ," + extraRobotData.toString() + "\n");
 
         //emit this to the main page so that you can keep the additional data persistent
         setTimeout(() => {
