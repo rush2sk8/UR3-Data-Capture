@@ -26,8 +26,8 @@ def run():
 
     conf = rtde_config.ConfigFile(args.config)
     output_names, output_types = conf.get_recipe('out')
-
-    con = rtde.RTDE('10.20.0.25', 30004)
+    HOST = '10.20.0.25'
+    con = rtde.RTDE(HOST, 30004)
     con.connect()
 
     # get controller version
