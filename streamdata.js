@@ -352,6 +352,10 @@ io.sockets.on('connection', (socket) => {
         if (enable_logging)
             robotstream.write("X, Y, Z, RX, RY, RZ," + extraRobotData.toString() + "\n");
 
+        if (extraRobotData.length >= 1) {
+            fs.writeFileSync("robot.extra", extraRobotData)
+        }
+
         //emit this to the main page so that you can keep the additional data persistent
         setTimeout(() => {
             io.sockets.emit('add_labels', { data: extraRobotData.toString() });
@@ -360,7 +364,7 @@ io.sockets.on('connection', (socket) => {
 
     //if they request the additional dat labels then send them what we have
     socket.on('request_labels', (d) => {
-             io.sockets.emit('add_labels', { data: extraRobotData.toString() });
+        io.sockets.emit('add_labels', { data: extraRobotData.toString() });
     })
 });
 
