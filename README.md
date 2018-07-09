@@ -11,3 +11,6 @@ Visit ```localhost:3000``` to see the data in action live.
 
 # How it works
 ![Site](https://github.com/rushadantia/UR3-Data-Capture/blob/master/md/img.png?raw=true)
+
+
+The website polls the force torque sensor at the [SENSOR_INTERVAL_TIME](https://github.com/rushadantia/UR3-Data-Capture/blob/master/streamdata.js#L2) variable (in ms) and the robot data at 125Hz. The website graphs refreshes from the server at 100Hz while the additional robot data refreshes at 125Hz.
