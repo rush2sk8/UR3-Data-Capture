@@ -15,7 +15,7 @@ pids
 lib-cov
 
 robot.extra 
-
+record_configuration.xml
 *.extra
 gitscript.bat
 # Coverage directory used by tools like istanbul
