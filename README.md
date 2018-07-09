@@ -5,7 +5,7 @@ Stream data from the robot and optitrack 6 axis force torque sensor.
 
 ``` npm install ```
 
-Also dont forget to change the ```host ``` ip to the ip address of the sensor.
+Also dont forget to change the [```host ```](https://github.com/rushadantia/UR3-Data-Capture/blob/master/streamdata.js#L3) ip to the ip address of the sensor and  [```host```](https://github.com/rushadantia/UR3-Data-Capture/blob/master/rtd.py#L29) ip to the ip address of the robot.
 
 Visit ```localhost:3000``` to see the data in action live.
 
