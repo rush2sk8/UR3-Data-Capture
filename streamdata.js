@@ -287,7 +287,7 @@ app.use('/api', router);
 router.get('/', function(req, res) { res.json({ message: 'hooray! welcome to our api!' }) });
 
 //localhost:3000/api/data returns the data 
-router.get('/data', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData }) });
+router.get('/forcetorque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData }) });
 
 //localhost:3000/api/force
 router.get('/force', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - timeRecieved) + "," + currData.split(',').slice(0, 3) }) })
@@ -299,7 +299,7 @@ router.get('/torque', (req, res) => { res.json({ data: "ΔT:" + (Date.now() - ti
 router.get('/robotxyz', (req, res) => { res.json({ data: currRobotData.split(',').slice(0, 3) }) })
 
 //localhost:3000/api/robotxyz
-router.get('/robottorque', (req, res) => { res.json({ data: currRobotData.split(',').slice(3, 6) }) })
+router.get('/robotrotation', (req, res) => { res.json({ data: currRobotData.split(',').slice(3, 6) }) })
 
 //non routed will just send you to the website localhost:3000/ 
 app.get('/', (req, res) => {
