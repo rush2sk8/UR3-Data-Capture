@@ -14,9 +14,9 @@ Visit ```localhost:3000``` to see the data in action live.
 
 ```Options:```
 
-```-ftpoll <refresh rate (ms)> \t Change the polling rate of the FT sensor. Default is 100ms```
+```-ftpoll <refresh rate (ms)> Change the polling rate of the FT sensor. Default is 100ms```
 
-```-log <t/f> \t\t\t Enable logging. Default is false ```
+```-log <t/f> Enable logging. Default is false ```
 
 # How it works
 ![Site](https://github.com/rushadantia/UR3-Data-Capture/blob/master/md/img.png?raw=true)
