@@ -14,7 +14,9 @@ Visit ```localhost:3000``` to see the data in action live.
 
 ```Options:```
 
-```-ftpoll <refresh rate (ms)> Change the polling rate of the FT sensor. Default is 100ms```
+```-ftpoll <refresh rate (Hz)> Change the polling rate of the FT sensor. Default is 10Hz```
+
+```-rbpoll <refresh rate (Hz)> Change the polling rate of the Robot Data. Default is 10Hz```
 
 ```-log <t/f> Enable logging. Default is false ```
 
@@ -22,7 +24,7 @@ Visit ```localhost:3000``` to see the data in action live.
 ![Site](https://github.com/rushadantia/UR3-Data-Capture/blob/master/md/img.png?raw=true)
 
 
-The website polls the force torque sensor at the [SENSOR_INTERVAL_TIME](https://github.com/rushadantia/UR3-Data-Capture/blob/master/streamdata.js#L2) variable (in ms) and the robot data at 125Hz. The website graphs refreshes from the server at 100Hz while the additional robot data refreshes at 125Hz.
+The website polls the force torque sensor at the ```-ftpoll``` variable (in HZ) and the robot data at ```-rbpoll```. 
 
 # Server API
 You can get the data from the server returned in JSON format.
