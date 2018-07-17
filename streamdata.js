@@ -1,6 +1,7 @@
 //***************************************************SETUP CODE**************************************************///
-var SENSOR_INTERVAL_TIME = 100;
+var SENSOR_INTERVAL_TIME = 10; //
 var SENSOR_IP_ADDRESS = '10.20.0.15';
+var ROBOT_INTERVAL_TIME = 10;
 var ROBOT_IP_ADDRESS = '10.20.0.25'
 var enable_logging = false;
 
@@ -38,7 +39,8 @@ if (fs.existsSync("./robot.extra")) {
 if (process.argv.length < 4) {
     console.log("Usage: node streamdata.js <robot ip> <ft sensor ip> [options ...]");
     console.log("\nOptions:")
-    console.log("-ftpoll <refresh rate (ms)> \t Change the polling rate of the FT sensor. Default is 100ms")
+    console.log("-ftpoll <refresh rate (Hz)> \t Change the polling rate of the FT sensor. Default is 10Hz")
+    console.log("-rbpoll <refresh rate (Hz)> \t Change the polling rate of the Robot Data. Default is 10Hz")
     console.log("-log <t/f> \t\t\t Enable logging. Default is false ")
     process.exit()
 }
@@ -68,6 +70,8 @@ for (var i = 4; i < process.argv.length; i++) {
         }
     } else if (process.argv[i] === '-ftpoll') {
         SENSOR_INTERVAL_TIME = process.argv[i + 1];
+    } else if (process.argv[i] === '-rbpoll') {
+        ROBOT_INTERVAL_TIME = process.argv[i + 1];
     }
 }
 
@@ -77,6 +81,7 @@ setInterval(() => {
     // console.log('\033c')
     console.log("CRD: " + currRobotData)
     console.log("CD: " + currData)
+    // console.log("FT:" + SENSOR_INTERVAL_TIME + " RB: "+ ROBOT_INTERVAL_TIME)
 }, 250);
 
 //***********************************CATCH ALL THE PYTHON OUTPUT CODE*******************************************///
@@ -86,7 +91,7 @@ function runPythonProcess() {
     pyshell = new PythonShell('rtd.py', {
         mode: 'text',
         pythonOptions: ['-u'], // get print results in real-time
-        args: ['--host', ROBOT_IP_ADDRESS + ""]
+        args: ['--host', ROBOT_IP_ADDRESS, '--frequency', ROBOT_INTERVAL_TIME]
     });
 
     //when we get a message from the script
@@ -146,7 +151,7 @@ function runPythonProcess() {
 
             prevRobotData = currRobotData
 
-            if (enable_logging) robotstream.write(Date.now()+ "," + toSend + "\n")
+            if (enable_logging) robotstream.write(Date.now() + "," + toSend + "\n")
 
         }
     });
@@ -233,7 +238,7 @@ function getAndParseXML() {
                 io.sockets.emit('sensor-update', { data: s })
 
                 //if the logging is enabled then write it to the file
-                if (enable_logging) forcetorquestream.write(Date.now()+","+s + "\n")
+                if (enable_logging) forcetorquestream.write(Date.now() + "," + s + "\n")
 
             });
 
@@ -255,7 +260,7 @@ function getAndParseXML() {
 }
 
 //run it every X ms
-setInterval(getAndParseXML, SENSOR_INTERVAL_TIME); //////////////////REENABLE WHEN SITE IS UP
+setInterval(getAndParseXML,  (1 / SENSOR_INTERVAL_TIME) * 1000); //////////////////REENABLE WHEN SITE IS UP
 
 //***************************************************WINDOWS CODE**************************************************///
 if (process.platform === "win32") {

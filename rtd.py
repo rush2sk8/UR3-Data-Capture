@@ -17,7 +17,7 @@ def run():
                         help='name of host to connect to (localhost)')
     parser.add_argument('--port', type=int, default=30004,
                         help='port number (30004)')
-    parser.add_argument('--frequency', type=int, default=100,
+    parser.add_argument('--frequency', type=int, default=10,
                         help='the sampling frequency in Herz')
     parser.add_argument('--config', default='record_configuration.xml',
                         help='data configuration file to use (record_configuration.xml)')
