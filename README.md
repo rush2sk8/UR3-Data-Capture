@@ -5,8 +5,6 @@ Stream data from the [UR3](https://www.universal-robots.com/products/ur3-robot/)
 
 ``` npm install ```
 
-Also dont forget to change the [```host ```](https://github.com/rushadantia/UR3-Data-Capture/blob/master/streamdata.js#L3) ip to the ip address of the sensor and  [```host```](https://github.com/rushadantia/UR3-Data-Capture/blob/master/rtd.py#L29) ip to the ip address of the robot.
-
 Visit ```localhost:3000``` to see the data in action live.
 
 # Usage
@@ -21,7 +19,7 @@ Visit ```localhost:3000``` to see the data in action live.
 ```-log <t/f> Enable logging. Default is false ```
 
 # How it works
-![Site](https://github.com/rushadantia/UR3-Data-Capture/blob/master/md/img.png?raw=true)
+![Site](https://github.com/rushadantia/UR3-Data-Capture/blob/master/md/diagram.png?raw=true)
 
 
 The website polls the force torque sensor at the ```-ftpoll``` variable (in HZ) and the robot data at ```-rbpoll```. 
