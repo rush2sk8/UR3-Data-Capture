@@ -9,6 +9,15 @@ Also dont forget to change the [```host ```](https://github.com/rushadantia/UR3-
 
 Visit ```localhost:3000``` to see the data in action live.
 
+# Usage
+```Usage: node streamdata.js <robot ip> <ft sensor ip> [options ...]```
+
+```Options:```
+
+```-ftpoll <refresh rate (ms)> \t Change the polling rate of the FT sensor. Default is 100ms```
+
+```-log <t/f> \t\t\t Enable logging. Default is false ```
+
 # How it works
 ![Site](https://github.com/rushadantia/UR3-Data-Capture/blob/master/md/img.png?raw=true)
 
