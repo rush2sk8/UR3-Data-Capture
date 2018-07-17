@@ -18,7 +18,7 @@ Stream data from the [UR3](https://www.universal-robots.com/products/ur3-robot/)
 
 Visit ```localhost:3000``` to see the data in action live.
 # How it works
-![Site](https://github.com/rushadantia/UR3-Data-Capture/blob/master/md/diagram.png?raw=true)
+![Site](https://github.com/rushadantia/UR3-Data-Capture/blob/master/md/diag.png?raw=true)
 The website polls the force torque sensor at the ```-ftpoll``` variable (in HZ) and the robot data at ```-rbpoll```. 
 
 # Server API
