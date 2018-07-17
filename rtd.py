@@ -74,7 +74,7 @@ def run():
             con.disconnect()
             sys.exit()
 
-        sleep(.1)
+        sleep(1/args.frequency)
     con.send_pause()
     con.disconnect()
 

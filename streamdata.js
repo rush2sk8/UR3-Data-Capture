@@ -42,6 +42,7 @@ if (process.argv.length < 4) {
     console.log("-log <t/f> \t\t\t Enable logging. Default is false ")
     process.exit()
 }
+
 SENSOR_IP_ADDRESS = process.argv[3]
 ROBOT_IP_ADDRESS = process.argv[2]
 
@@ -60,10 +61,10 @@ for (var i = 4; i < process.argv.length; i++) {
             robotstream = fs.createWriteStream(Date.now() + '_robot_data.csv');
 
             //if logging is enabled write this header
-            forcetorquestream.write("Fx (N),Fy (N),Fz (N),Tx (Nm),Ty (Nm),Tz (Nm)\n");
+            forcetorquestream.write("Current Time (ms),Fx (N),Fy (N),Fz (N),Tx (Nm),Ty (Nm),Tz (Nm)\n");
 
             //if logging is enabled write this header
-            robotstream.write("X, Y, Z, RX, RY, RZ," + extraRobotData.toString() + "\n");
+            robotstream.write("Current Time (ms),X, Y, Z, RX, RY, RZ," + extraRobotData.toString() + "\n");
         }
     } else if (process.argv[i] === '-ftpoll') {
         SENSOR_INTERVAL_TIME = process.argv[i + 1];
@@ -145,7 +146,7 @@ function runPythonProcess() {
 
             prevRobotData = currRobotData
 
-            if (enable_logging) robotstream.write(toSend + "\n")
+            if (enable_logging) robotstream.write(Date.now()+ "," + toSend + "\n")
 
         }
     });
@@ -232,7 +233,7 @@ function getAndParseXML() {
                 io.sockets.emit('sensor-update', { data: s })
 
                 //if the logging is enabled then write it to the file
-                if (enable_logging) forcetorquestream.write(s + "\n")
+                if (enable_logging) forcetorquestream.write(Date.now()+","+s + "\n")
 
             });
 
@@ -363,7 +364,7 @@ io.sockets.on('connection', (socket) => {
         extraRobotData = data;
 
         if (enable_logging)
-            robotstream.write("X, Y, Z, RX, RY, RZ," + extraRobotData.toString() + "\n");
+            robotstream.write("Current Time(ms),X, Y, Z, RX, RY, RZ," + extraRobotData.toString() + "\n");
 
         if (extraRobotData.length >= 1) {
             fs.writeFileSync("robot.extra", extraRobotData)
