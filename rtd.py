@@ -13,7 +13,7 @@ from time import sleep
 def run():
     # parameters
     parser = argparse.ArgumentParser()
-    parser.add_argument('--host', default='localhost',
+    parser.add_argument('--host', default='10.20.0.25',
                         help='name of host to connect to (localhost)')
     parser.add_argument('--port', type=int, default=30004,
                         help='port number (30004)')
@@ -23,11 +23,10 @@ def run():
                         help='data configuration file to use (record_configuration.xml)')
 
     args = parser.parse_args()
-
+    print args.host
     conf = rtde_config.ConfigFile(args.config)
     output_names, output_types = conf.get_recipe('out')
-    HOST = '10.20.0.25'
-    con = rtde.RTDE(HOST, 30004)
+    con = rtde.RTDE(args.host, 30004)
     con.connect()
 
     # get controller version
