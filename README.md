@@ -1,5 +1,5 @@
 # UR3 Data Capture
-Stream data from the robot and optitrack 6 axis force torque sensor.
+Stream data from the [UR3](https://www.universal-robots.com/products/ur3-robot/) and Optoforce <sup>now OnRobot</sup> 6 axis force torque sensor.
 
 **Installation**
 
