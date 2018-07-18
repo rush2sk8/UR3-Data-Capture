@@ -28,14 +28,15 @@ var prevRobotData = "NONE"
 var extraRobotData = []
 var pyshell;
 //***********************************************READ EXTRA DATA CODE*******************************************///
-if (fs.existsSync("./robot.extra")) {
+//check if the file exists in a synchronous fashion 
+if (fs.existsSync("./robot.extra")) {       
     var extra = fs.readFileSync("./robot.extra", "utf8", (err) => {}).split(',');
     for (var i = extra.length - 1; i >= 0; i--) {
         extraRobotData.push(extra[i])
     }
 }
 //*************************************************CMD LINE ARGS CODE*******************************************///
-
+//check for command line arguments
 if (process.argv.length < 4) {
     console.log("Usage: node streamdata.js <robot ip> <ft sensor ip> [options ...]");
     console.log("\nOptions:")
@@ -165,6 +166,7 @@ function runPythonProcess() {
     });
 }
 
+//used only to emit data when it changes
 function checkRobotData(data1, data2) {
     const data = data1.split(", ");
     const other2 = data2.split(", ")
@@ -192,6 +194,7 @@ function getAndParseXML() {
         //when the end of the data is reached then parse the xml data
         response.on('end', function() {
 
+            //parse the xml string
             parser.parseString(xmlData, (err, result) => {
 
                 //get the data
