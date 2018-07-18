@@ -1,25 +1,25 @@
 //***************************************************SETUP CODE**************************************************///
-var SENSOR_INTERVAL_TIME = 10; //
-var SENSOR_IP_ADDRESS = '10.20.0.15';
-var ROBOT_INTERVAL_TIME = 10;
-var ROBOT_IP_ADDRESS = '10.20.0.25'
-var enable_logging = false;
-
-const http = require('http');
-
-var xml2js = require('xml2js');
-var fs = require('fs');
-var parser = new xml2js.Parser();
-
-var forcetorquestream = null;
-var robotstream = null;
-
-const express = require('express');
+var SENSOR_INTERVAL_TIME = 10;                      //sensor poll rate hz
+var SENSOR_IP_ADDRESS = '10.20.0.15';               //sensor ip
+var ROBOT_INTERVAL_TIME = 10;                       //robot data poll rate hz
+var ROBOT_IP_ADDRESS = '10.20.0.25'                 //robot ip
+var enable_logging = false;                         //loggin is false by default
+            
+const http = require('http');                       //http library used to get the sensor data
+            
+var xml2js = require('xml2js');                     //library for parsing the XML from the FT Sensor
+var fs = require('fs');                             //filesystem for file I/O
+var parser = new xml2js.Parser();                   //XML parser
+            
+var forcetorquestream = null;                       //file I/O stream for FT sensor values
+var robotstream = null;                             //file I/O stream for robot data values
+            
+const express = require('express');                 //used to host a web server
 const app = express();
-const expressServer = app.listen(3000);
-const io = require('socket.io')(expressServer);
+const expressServer = app.listen(3000);             //listen the webserver on port 3000
+const io = require('socket.io')(expressServer);     //create a websocket 
 const bodyParser = require('body-parser');
-const PythonShell = require('python-shell');
+const PythonShell = require('python-shell');        //shell to pyscript for robot data aqusision
 var currData = 'NONE';
 var currRobotData = 'NONE'
 var timeRecieved = 0;
