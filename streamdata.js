@@ -78,7 +78,7 @@ for (var i = 4; i < process.argv.length; i++) {
 
 //write the information to the console every X ms
 setInterval(() => {
-    // clear command
+    // clear command IMP
     // console.log('\033c')
     console.log("CRD: " + currRobotData)
     console.log("CD: " + currData)
