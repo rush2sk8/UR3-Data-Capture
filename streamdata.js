@@ -80,8 +80,8 @@ for (var i = 4; i < process.argv.length; i++) {
 setInterval(() => {
     // clear command IMP
     // console.log('\033c')
-    console.log("CRD: " + currRobotData)
-    console.log("CD: " + currData)
+    //console.log("CRD: " + currRobotData)
+    //console.log("CD: " + currData)
     // console.log("FT:" + SENSOR_INTERVAL_TIME + " RB: "+ ROBOT_INTERVAL_TIME)
 }, 250);
 
@@ -356,15 +356,16 @@ io.sockets.on('connection', (socket) => {
 
     //write a new config kill the python process and replace it with a new one which loads the new configuration
     socket.on('add_data', (d) => {
-
+        console.log(d)
         var data = d.data.split(',');
 
         //write the new record config BLOCKING
         writeNewConfiguration(data)
+        console.log("data: "+data.toString())
 
         //kill the python process
-        pyshell.childProcess.kill('SIGINT')
-
+        //pyshell.childProcess.kill('SIGINT')
+        pyshell.terminate('SIGINT')
         //restart the pyshell this time loading the enw configuration
         runPythonProcess();
 

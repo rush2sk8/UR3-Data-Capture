@@ -1,4 +1,4 @@
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect('http://10.20.0.128:3000');
 
 //where we hold the xyz data
 var x = [];
