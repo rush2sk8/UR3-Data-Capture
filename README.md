@@ -1,7 +1,9 @@
 # UR3 Data Capture
-Stream data from the [UR3](https://www.universal-robots.com/products/ur3-robot/) and Optoforce <sup>now OnRobot</sup> 6 axis force torque sensor.
+Stream data from the [UR3](https://www.universal-robots.com/products/ur3-robot/) and Optoforce <sup>now OnRobot</sup> 6 axis force torque sensor. 
 
 **Installation**
+
+**Make sure that you update nodejs to the latest version to avoid any issues with bugs in older versions**
 
 ``` npm install ```
 
