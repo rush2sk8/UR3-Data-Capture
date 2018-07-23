@@ -152,8 +152,8 @@ function runPythonProcess() {
 
             prevRobotData = currRobotData
 
-            if (enable_logging) robotstream.write(Date.now() + "," + toSend + "\n")
-
+            if (enable_logging) robotstream.write(Date.now() + "," + toSend.replace(/\+/g, "") + "\n")
+ 
         }
     });
 
