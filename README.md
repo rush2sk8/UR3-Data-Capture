@@ -3,7 +3,7 @@ Stream data from the [UR3](https://www.universal-robots.com/products/ur3-robot/)
 
 **Installation**
 
-**Make sure that you update ```nodejs``` to the latest version to avoid any issues with bugs in older versions**
+**Make sure that you update nodejs to the latest version to avoid any issues with bugs in older versions**
 
 ``` npm install ```
 
