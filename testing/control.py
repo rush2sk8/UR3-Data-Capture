@@ -15,18 +15,12 @@ print "starting"
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 time.sleep(.05)
-s.send(HOME_STRING)
+s.send("rq_activate()"+"\n")
 time.sleep(SLEEP_TIME)
 
-s.send(getMovejString([-78.80,-89.02,-89.25,-90,85.6,53.23])) #abt 2 pick
-time.sleep(SLEEP_TIME)
-s.send(getMovejString([-78.80,-96.42,-115.12,-57.13,89.03,53.25])) #move to part
-time.sleep(SLEEP_TIME)
-s.send(getMovejString([-78.8,-89.42,-82.66,-96.58,88.86,53.37])) #up
-time.sleep(SLEEP_TIME)
-s.send(getMovejString([-78.80,-96.42,-115.12,-57.13,89.03,53.25])) #down
-time.sleep(SLEEP_TIME)
-s.send(HOME_STRING)
+s.send("rq_close()"+"\n")
+
+
 data = s.recv(1024)
 s.close()
 print repr(data).decode('utf-8')
