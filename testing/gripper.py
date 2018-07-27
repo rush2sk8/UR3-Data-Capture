@@ -1,6 +1,5 @@
 import socket 
 import sys
-
 HOST = "10.20.0.25"
 PORT = 30002
 
@@ -24,10 +23,6 @@ elif len(sys.argv) == 2 and sys.argv[1] == "close":
 
 elif len(sys.argv) == 2 and sys.argv[1] == "open":
 	s.send(open("open.script", "r").read()+"\n");
-
-
-data = s.recv(1024)
-
 s.close()
 
 print "Program finish"
