@@ -27,6 +27,7 @@ elif len(sys.argv) == 2 and sys.argv[1] == "open":
 
 
 data = s.recv(1024)
+
 s.close()
 
 print "Program finish"
