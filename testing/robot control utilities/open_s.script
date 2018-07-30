@@ -1,4 +1,4 @@
-def open():
+def unnamed():
   modbus_add_signal("169.254.222.138", 255, 420, 3, "MODBUS_1", False)
   modbus_set_signal_update_frequency("MODBUS_1", 125)
   set_standard_analog_input_domain(0, 1)
@@ -222,84 +222,6 @@ def open():
   	rq_current = socket_get_var("COU",gripper_socket)
   	sync()
       return rq_current * 10
-  end
-  def rq_print_gripper_fault_code(gripper_socket="1"):
-  	gFLT = rq_get_var(FLT, 2, gripper_socket)
-  	if(is_FLT_no_fault(gFLT)):
-  		textmsg("Gripper Fault : ", "No Fault (0x00)")
-  	elif (is_FLT_action_delayed(gFLT)):
-  		textmsg("Gripper Fault : ", "Priority Fault: Action delayed, initialization must be completed prior to action (0x05)")
-  	elif (is_FLT_not_activated(gFLT)):
-  		textmsg("Gripper Fault : ", "Priority Fault: The activation must be set prior to action (0x07)")
-  	elif (is_FLT_autorelease_in_progress(gFLT)):
-  		textmsg("Gripper Fault : ", "Minor Fault: Automatic release in progress (0x0B)")
-  	elif (is_FLT_overcurrent(gFLT)):
-  		textmsg("Gripper Fault : ", "Minor Fault: Overcurrent protection tiggered (0x0E)")
-  	elif (is_FLT_autorelease_completed(gFLT)):
-  		textmsg("Gripper Fault : ", "Major Fault: Automatic release completed (0x0F)")
-  	else:
-  		textmsg("Gripper Fault : ", "Unkwown Fault")
-  	end
-  end
-  def rq_print_gripper_num_cycles(gripper_socket="1"):
-  	socket_send_string("GET NCY",gripper_socket)
-  	sync()
-  	string_from_server = socket_read_string(gripper_socket)
-  	sync()
-  	if(string_from_server == "0"):
-  		textmsg("Gripper Cycle Number : ", "Number of cycles is unreachable.")
-  	else:
-  		textmsg("Gripper Cycle Number : ", string_from_server)
-  	end
-  end
-  def rq_print_gripper_driver_state(gripper_socket="1"):
-  	socket_send_string("GET DST",gripper_socket)
-  	sync()
-  	string_from_server = socket_read_string(gripper_socket)
-  	sync()
-  	if(string_from_server == "0"):
-  		textmsg("Gripper Driver State : ", "RQ_STATE_INIT")
-  	elif(string_from_server == "1"):
-  		textmsg("Gripper Driver State : ", "RQ_STATE_LISTEN")
-  	elif(string_from_server == "2"):
-  		textmsg("Gripper Driver State : ", "RQ_STATE_READ_INFO")
-  	elif(string_from_server == "3"):
-  		textmsg("Gripper Driver State : ", "RQ_STATE_ACTIVATION")
-  	else:
-  		textmsg("Gripper Driver State : ", "RQ_STATE_RUN")
-  	end
-  end
-  def rq_print_gripper_serial_number(gripper_socket="1"):
-  	socket_send_string("GET SNU",gripper_socket)
-  	sync()
-  	string_from_server = socket_read_string(gripper_socket)
-  	sync()
-  	textmsg("Gripper Serial Number : ", string_from_server)
-  end
-  def rq_print_gripper_firmware_version(gripper_socket="1"):
-  	socket_send_string("GET FWV",gripper_socket)
-  	sync()
-  	string_from_server = socket_read_string(gripper_socket)
-  	sync()
-  	textmsg("Gripper Firmware Version : ", string_from_server)
-  end
-  def rq_print_gripper_driver_version(gripper_socket="1"):
-  	socket_send_string("GET VER",gripper_socket)
-  	sync()
-  	string_from_server = socket_read_string(gripper_socket)
-  	sync()
-  	textmsg("Gripper Driver Version : ", string_from_server)
-  end
-  def rq_print_gripper_probleme_connection(gripper_socket="1"):
-  	socket_send_string("GET PCO",gripper_socket)
-  	sync()
-  	string_from_server = socket_read_string(gripper_socket)
-  	sync()
-  	if (string_from_server == "0"):
-  		textmsg("Gripper Connection State : ", "No connection problem detected")
-  	else:
-  		textmsg("Gripper Connection State : ", "Connection problem detected")
-  	end
   end
   def is_ack(list_of_bytes):
   	if (list_of_bytes[0] != 3):
@@ -625,33 +547,8 @@ def open():
   set_closed_mm(0.0, 4)
   set_open_mm(50.0, 4)
   $ 1 "Robot Program"
-  $ 2 "Gripper Open (1)"
-  gripper_1_used = True
-  if (connectivity_checked[0] != 1):
-    if not(rq_set_sid(9, "1")):
-      popup("Gripper 1 must be connected to run this program.", "No connection", False, True, True)
-    end
-    connectivity_checked[0] = 1
-  end
-  if (status_checked[0] != 1):
-    if not(rq_is_gripper_activated("1")):
-      popup("Gripper 1 is not activated. Go to Installation tab > Gripper to activate it and run the program again.", "Not activated", False, True, True)
-    end
-    status_checked[0] = 1
-  end
-  rq_set_speed(255, "1")
-  current_speed[0] = 255
-  rq_set_force(255, "1")
-  current_force[0] = 255
-  rq_set_pos(0, "1")
-  rq_go_to("1")
-  rq_wait("1")
-  gripper_1_selected = True
-  gripper_2_selected = False
-  gripper_3_selected = False
-  gripper_4_selected = False
-  gripper_1_used = False
-  gripper_2_used = False
-  gripper_3_used = False
-  gripper_4_used = False
+  $ 2 "rq_activate()"
+  rq_activate()
+  $ 3 "rq_open()"
+  rq_open()
 end

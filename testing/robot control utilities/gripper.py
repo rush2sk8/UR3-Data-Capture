@@ -26,3 +26,14 @@ elif len(sys.argv) == 2 and sys.argv[1] == "open":
 s.close()
 
 print "Program finish"
+#line 226 rq_print_gripper_fault_code
+#rq_print_gripper_num_cycles
+#rq_print_gripper_driver_state
+#rq_print_gripper_serial_number
+#rq_print_gripper_firmware_version
+#rq_print_gripper_driver_version
+#rq_print_gripper_probleme_connection
+#
+#
+#
+#

@@ -80,7 +80,7 @@ for (var i = 4; i < process.argv.length; i++) {
 setInterval(() => {
     // clear command IMP
     // console.log('\033c')
-    //console.log("CRD: " + currRobotData)
+    console.log("CRD: " + currRobotData)
     //console.log("CD: " + currData)
     // console.log("FT:" + SENSOR_INTERVAL_TIME + " RB: "+ ROBOT_INTERVAL_TIME)
 }, 250);

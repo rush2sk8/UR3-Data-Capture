@@ -2,9 +2,5 @@
 <rtde_config>
  <recipe key="out">
 <field name="actual_TCP_pose" type="VECTOR6D"/>
-<field name="timestamp" type="DOUBLE"/>
-<field name="target_q" type="VECTOR6D"/>
-<field name="safety_mode" type="INT32"/>
-<field name="actual_tool_accelerometer" type="VECTOR3D"/>
 </recipe>
 </rtde_config>
