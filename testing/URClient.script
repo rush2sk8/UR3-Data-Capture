@@ -1,0 +1,50 @@
+def URClient():
+  set_standard_analog_input_domain(0, 1)
+  set_standard_analog_input_domain(1, 1)
+  set_tool_analog_input_domain(0, 1)
+  set_tool_analog_input_domain(1, 1)
+  set_analog_outputdomain(0, 0)
+  set_analog_outputdomain(1, 0)
+  set_tool_voltage(0)
+  set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+  set_payload(0.0)
+  set_gravity([0.0, 0.0, 9.82])
+  $ 1 "BeforeStart"
+  $ 2 "open≔socket_open('10.20.0.128',111)"
+  global open=socket_open("10.20.0.128",111)
+  $ 3 "Loop open≟ False "
+  while (open ==  False  ):
+    $ 4 "open≔socket_open('10.20.0.128',111)"
+    global open=socket_open("10.20.0.128",111)
+  end
+  $ 5 "targetPos≔p[0,0,0,0,0,0]"
+  global targetPos=p[0,0,0,0,0,0]
+  $ 6 "counter≔6"
+  global counter=6
+  while (True):
+    $ 7 "Robot Program"
+    $ 8 "sendToServer≔'send to server'"
+    global sendToServer=request_string_from_primary_client("send to server")
+    $ 9 "socket_send_string(sendToServer)"
+    socket_send_string(sendToServer)
+    $ 10 "receiveFromServ≔socket_read_ascii_float(6)"
+    global receiveFromServ=socket_read_ascii_float(6)
+    $ 11 "Loop receiveFromServ[0]≠6"
+    while (receiveFromServ[0] !=6):
+      $ 12 "Wait: 0.3"
+      sleep(0.3)
+      $ 13 "receiveFromServ≔socket_read_ascii_float(6)"
+      global receiveFromServ=socket_read_ascii_float(6)
+    end
+    $ 14 "Loop counter<6"
+    while (counter <6):
+      $ 15 "targetPos[counter]=receiveFromServ[counter+1]"
+      targetPos[counter]=receiveFromServ[counter+1]
+      $ 16 "counter≔counter+1"
+      global counter=counter+1
+    end
+    $ 17 "MoveJ"
+    $ 18 "targetPos"
+    movej(targetPos, a=1.3962634015954636, v=1.0471975511965976)
+  end
+end

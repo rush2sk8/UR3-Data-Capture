@@ -1,0 +1,70 @@
+def ur_asking_3_data_point_from_host():
+    set_standard_analog_input_domain(0, 1)
+    set_standard_analog_input_domain(1, 1)
+    set_tool_analog_input_domain(0, 1)
+    set_tool_analog_input_domain(1, 1)
+    set_analog_outputdomain(0, 0)
+    set_analog_outputdomain(1, 0)
+    set_tool_voltage(0)
+    set_standard_digital_input_action(0, "default")
+    set_standard_digital_input_action(1, "default")
+    set_standard_digital_input_action(2, "default")
+    set_standard_digital_input_action(3, "default")
+    set_standard_digital_input_action(4, "default")
+    set_standard_digital_input_action(5, "default")
+    set_standard_digital_input_action(6, "default")
+    set_standard_digital_input_action(7, "default")
+    set_tool_digital_input_action(0, "default")
+    set_tool_digital_input_action(1, "default")
+    set_tcp(p[0.0,0.0,0.0,0.0,0.0,0.0])
+    set_payload(0.0)
+    set_gravity([0.0, 0.0, 9.82])
+    global Base=p[0.0,0.0,0.0,0.0,0.0,0.0]
+    global Tool=get_forward_kin()
+    $ 1 "BeforeStart"
+    $ 2 "var_1≔socket_open('192.168.0.100',30000)"
+    global var_1=socket_open("192.168.0.100",30000)
+    $ 3 "MoveJ"
+    $ 4 "Waypoint_1"
+    movej([-1.898433631871459, -1.4042314764345356, 1.6835942476575025, -1.8483750449710143, -1.5576827747281836,     -0.3243786564285909],
+    a=1.3962634015954636, v=1.0471975511965976)
+    while (True):
+    $ 5 "Robot Program"
+    $ 6 "Loop var_1≟ False "
+    while (var_1 == False ):
+    $ 7 "var_1≔socket_open('192.168.0.100',30000)"
+    global var_1=socket_open("192.168.0.100",30000)
+    $ 8 "Wait: 0.5"
+    sleep(0.5)
+    end
+    $ 9 "socket_send_string('asking_for_data')"
+    socket_send_string("asking_for_data")
+    $ 10 "Wait: 0.5"
+    sleep(0.5)
+    $ 11 "var_2≔socket_read_ascii_float(3)"
+    global var_2=socket_read_ascii_float(3)
+    $ 12 "Wait: 0.5"
+    sleep(0.5)
+    $ 13 "var_1≔ False "
+    global var_1= False
+    $ 14 "socket_close()"
+    socket_close()
+    $ 15 "If var_2[0]≠0"
+    if (var_2[0] != 0):
+    $ 16 "var_3≔p[var_2[1]/1000,var_2[2]/1000,0,0,0,d2r(var_2[3])]"
+    global var_3=p[var_2[1]/1000,var_2[2]/1000,0,0,0,d2r(var_2[3])]
+    $ 17 "var_5≔get_actual_tcp_pose()"
+    global var_5=get_actual_tcp_pose()
+    $ 18 "var_4≔pose_trans(var_5,var_3)"
+    global var_4=pose_trans(var_5,var_3)
+    $ 19 "MoveL"
+    $ 20 "var_4"
+    movel(pose_trans(Base, var_4), a=1.2, v=0.25)
+    $ 21 "Wait: 1.0"
+    sleep(1.0)
+    $ 22 "Waypoint_1"
+    movel(pose_trans(Base, p[3.1650244374691747E-6,0.35000040344487654,0.24998032106128484,3.1415312542037235,2.7358460153244513E-
+    5,-8.941116579450333E-6]), a=1.2, v=0.25)
+    end
+    end
+    end    
