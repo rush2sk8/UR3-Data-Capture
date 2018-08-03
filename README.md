@@ -40,6 +40,6 @@ Returns the forcetorque sensor's torque data
 ```localhost:3000/api/robotxyz``` 
 Returns the robot arm's X Y Z location in space
 
-```localhost:3000/robotroration``` 
+```localhost:3000/robotrotation``` 
 Returns the RX RY RZ of the robot arm
 
