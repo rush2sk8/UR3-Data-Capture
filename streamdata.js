@@ -31,7 +31,7 @@ var pyshell;
 //check if the file exists in a synchronous fashion 
 if (fs.existsSync("./robot.extra")) {       
     var extra = fs.readFileSync("./robot.extra", "utf8", (err) => {}).split(',');
-    for (var i = extra.length - 1; i >= 0; i--) {
+    for (var i = 0; i < extra.length; i++) {
         extraRobotData.push(extra[i])
     }
 }
